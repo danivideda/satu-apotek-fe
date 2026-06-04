@@ -1,7 +1,12 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  isRedirect,
+  redirect,
+  useNavigate,
+} from '@tanstack/react-router'
 import React, { useState } from 'react'
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/_public/login')({
   component: RouteComponent,
 })
 
@@ -73,7 +78,10 @@ function FormComponent() {
           />
         </label>
       </div>
-      <button type="submit" className="w-full mt-4 bg-blue-50 p-4 rounded-sm cursor-pointer hover:bg-blue-200">
+      <button
+        type="submit"
+        className="w-full mt-4 bg-blue-50 p-4 rounded-sm cursor-pointer hover:bg-blue-200"
+      >
         Login
       </button>
     </form>

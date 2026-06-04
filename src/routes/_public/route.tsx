@@ -5,10 +5,10 @@ import {
   redirect,
 } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/dashboard')({
+export const Route = createFileRoute('/_public')({
   beforeLoad: async () => {
+    const apiUrl = import.meta.env.VITE_API_URL
     try {
-      const apiUrl = import.meta.env.VITE_API_URL
       const response = await fetch(`${apiUrl}/auth/owners/check`, {
         method: 'GET',
         headers: {
@@ -16,8 +16,8 @@ export const Route = createFileRoute('/dashboard')({
         },
         credentials: 'include',
       })
-      if (!response.ok) {
-        throw redirect({ to: '/login' })
+      if (response.ok) {
+        throw redirect({ to: '/dashboard', replace: true })
       }
     } catch (error) {
       if (isRedirect(error)) {
@@ -33,15 +33,5 @@ export const Route = createFileRoute('/dashboard')({
 })
 
 function RouteComponent() {
-  return (
-    <div className="flex min-h-screen">
-      <nav className="flex-1 bg-gray-50 border border-solid">
-        <div>Homepage</div>
-        <div>Profile</div>
-      </nav>
-      <div className="flex-8">
-        <Outlet />
-      </div>
-    </div>
-  )
+  return <Outlet />
 }
