@@ -1,3 +1,4 @@
+import { API_URL } from '#/constants'
 import {
   createFileRoute,
   useNavigate,
@@ -25,7 +26,7 @@ function FormComponent() {
 
     try {
       const response = await fetch(
-        'http://localhost:8080/v1/auth/owners/login',
+        `${API_URL}/auth/owners/login`,
         {
           method: 'POST',
           headers: {

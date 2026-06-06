@@ -1,3 +1,4 @@
+import { API_URL } from '#/constants'
 import {
   createFileRoute,
   isRedirect,
@@ -7,9 +8,8 @@ import {
 
 export const Route = createFileRoute('/_public')({
   beforeLoad: async () => {
-    const apiUrl = import.meta.env.VITE_API_URL
     try {
-      const response = await fetch(`${apiUrl}/auth/owners/check`, {
+      const response = await fetch(`${API_URL}/auth/owners/check`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

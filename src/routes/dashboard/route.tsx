@@ -1,15 +1,16 @@
+import { API_URL } from '#/constants'
 import {
   createFileRoute,
   isRedirect,
   Outlet,
   redirect,
 } from '@tanstack/react-router'
+import { NavBar } from './-components/NavBar'
 
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL
-      const response = await fetch(`${apiUrl}/auth/owners/check`, {
+      const response = await fetch(`${API_URL}/auth/owners/check`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -35,10 +36,7 @@ export const Route = createFileRoute('/dashboard')({
 function RouteComponent() {
   return (
     <div className="flex min-h-screen">
-      <nav className="flex-1 bg-gray-50 border border-solid">
-        <div>Homepage</div>
-        <div>Profile</div>
-      </nav>
+      <NavBar />
       <div className="flex-8">
         <Outlet />
       </div>
