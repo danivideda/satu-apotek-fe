@@ -1,8 +1,5 @@
 import { API_URL } from '#/constants'
-import {
-  createFileRoute,
-  useNavigate,
-} from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import React, { useState } from 'react'
 
 export const Route = createFileRoute('/_public/login')({
@@ -25,20 +22,17 @@ function FormComponent() {
     e.preventDefault()
 
     try {
-      const response = await fetch(
-        `${API_URL}/auth/owners/login`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: username,
-            password: password,
-          }),
-          credentials: 'include',
+      const response = await fetch(`${API_URL}/auth/owners/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+        credentials: 'include',
+      })
       if (!response.ok) {
         const result = await response.json()
         console.log(result)

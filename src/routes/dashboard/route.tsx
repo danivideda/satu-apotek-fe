@@ -9,6 +9,7 @@ import { NavBar } from './-components/NavBar'
 
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: async () => {
+    console.log('from dashboard')
     try {
       const response = await fetch(`${API_URL}/auth/owners/check`, {
         method: 'GET',
@@ -30,6 +31,7 @@ export const Route = createFileRoute('/dashboard')({
       }
     }
   },
+  loader: () => {console.log("from loader dashboard")},
   component: RouteComponent,
 })
 

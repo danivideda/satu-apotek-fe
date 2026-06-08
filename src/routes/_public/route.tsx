@@ -8,6 +8,7 @@ import {
 
 export const Route = createFileRoute('/_public')({
   beforeLoad: async () => {
+    console.log("from public routes")
     try {
       const response = await fetch(`${API_URL}/auth/owners/check`, {
         method: 'GET',
