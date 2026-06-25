@@ -1,6 +1,6 @@
 import { API_URL } from '#/constants'
 import cn from '#/lib/cn'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import React, { useState } from 'react'
 
 export const Route = createFileRoute('/_public/login')({
@@ -8,7 +8,8 @@ export const Route = createFileRoute('/_public/login')({
 })
 
 function FormComponent() {
-  const navigate = useNavigate()
+  const navigate = Route.useNavigate()
+  const context = Route.useRouteContext()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -43,7 +44,8 @@ function FormComponent() {
         const result = await response.json()
         console.log(result)
       } else {
-        console.log("runs navigate")
+        context.queryClient.invalidateQueries()
+        console.log('runs navigate')
         navigate({ to: '/dashboard' })
       }
     } catch (error) {

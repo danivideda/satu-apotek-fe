@@ -20,6 +20,7 @@ export const Route = createFileRoute('/_owner')({
         const _redirect = error
         throw _redirect
       } else {
+        context.queryClient.invalidateQueries()
         console.log(error)
         throw redirect({ to: '/' })
       }
