@@ -1,6 +1,7 @@
 import { API_URL } from '#/constants'
 import cn from '#/lib/cn'
 import {
+  getRouteApi,
   Link,
   useNavigate,
   type ValidateLinkOptions,
@@ -10,6 +11,8 @@ import type React from 'react'
 
 export function NavBar() {
   const navigate = useNavigate()
+  const routeApi = getRouteApi('/_owner/dashboard')
+  const routeContext = routeApi.useRouteContext()
   const handleLogout = async () => {
     try {
       const csrfToken = parseCookie(document.cookie)['owner_csrf']
@@ -28,6 +31,9 @@ export function NavBar() {
       if (!response.ok) {
         throw new Error(`Error happened status: ${response.status}`)
       }
+
+      routeContext.queryClient.invalidateQueries()
+
       navigate({ to: '/login' })
     } catch (error) {
       console.log(error)
@@ -59,9 +65,12 @@ function NavLink({
     <Link {...linkOptions}>
       {({ isActive }) => (
         <div
-          className={cn('bg-blue-100 p-2 w-full border-b border-solid', {
-            'bg-red-100': isActive,
-          })}
+          className={cn(
+            'bg-blue-100 p-2 w-full border-b border-solid border-black',
+            {
+              'bg-red-100 italic': isActive,
+            },
+          )}
         >
           {label}
         </div>

@@ -9,43 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as PublicRouteRouteImport } from './routes/_public/route'
+import { Route as OwnerRouteRouteImport } from './routes/_owner/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
-import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
-import { Route as DashboardPharmaciesRouteImport } from './routes/dashboard/pharmacies'
 import { Route as PublicRegisterRouteImport } from './routes/_public/register'
 import { Route as PublicLoginRouteImport } from './routes/_public/login'
+import { Route as OwnerDashboardRouteRouteImport } from './routes/_owner/dashboard/route'
+import { Route as OwnerDashboardIndexRouteImport } from './routes/_owner/dashboard/index'
+import { Route as OwnerDashboardProfileRouteImport } from './routes/_owner/dashboard/profile'
+import { Route as OwnerDashboardPharmaciesRouteImport } from './routes/_owner/dashboard/pharmacies'
 
-const DashboardRouteRoute = DashboardRouteRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PublicRouteRoute = PublicRouteRouteImport.update({
   id: '/_public',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OwnerRouteRoute = OwnerRouteRouteImport.update({
+  id: '/_owner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardProfileRoute = DashboardProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardPharmaciesRoute = DashboardPharmaciesRouteImport.update({
-  id: '/pharmacies',
-  path: '/pharmacies',
-  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const PublicRegisterRoute = PublicRegisterRouteImport.update({
   id: '/register',
@@ -57,34 +42,56 @@ const PublicLoginRoute = PublicLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => PublicRouteRoute,
 } as any)
+const OwnerDashboardRouteRoute = OwnerDashboardRouteRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => OwnerRouteRoute,
+} as any)
+const OwnerDashboardIndexRoute = OwnerDashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OwnerDashboardRouteRoute,
+} as any)
+const OwnerDashboardProfileRoute = OwnerDashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => OwnerDashboardRouteRoute,
+} as any)
+const OwnerDashboardPharmaciesRoute =
+  OwnerDashboardPharmaciesRouteImport.update({
+    id: '/pharmacies',
+    path: '/pharmacies',
+    getParentRoute: () => OwnerDashboardRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/dashboard': typeof OwnerDashboardRouteRouteWithChildren
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
-  '/dashboard/pharmacies': typeof DashboardPharmaciesRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRoute
+  '/dashboard/profile': typeof OwnerDashboardProfileRoute
+  '/dashboard/': typeof OwnerDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
-  '/dashboard/pharmacies': typeof DashboardPharmaciesRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRoute
+  '/dashboard/profile': typeof OwnerDashboardProfileRoute
+  '/dashboard': typeof OwnerDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_owner': typeof OwnerRouteRouteWithChildren
   '/_public': typeof PublicRouteRouteWithChildren
-  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/_owner/dashboard': typeof OwnerDashboardRouteRouteWithChildren
   '/_public/login': typeof PublicLoginRoute
   '/_public/register': typeof PublicRegisterRoute
-  '/dashboard/pharmacies': typeof DashboardPharmaciesRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  '/_owner/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRoute
+  '/_owner/dashboard/profile': typeof OwnerDashboardProfileRoute
+  '/_owner/dashboard/': typeof OwnerDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,35 +114,36 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_owner'
     | '/_public'
-    | '/dashboard'
+    | '/_owner/dashboard'
     | '/_public/login'
     | '/_public/register'
-    | '/dashboard/pharmacies'
-    | '/dashboard/profile'
-    | '/dashboard/'
+    | '/_owner/dashboard/pharmacies'
+    | '/_owner/dashboard/profile'
+    | '/_owner/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  OwnerRouteRoute: typeof OwnerRouteRouteWithChildren
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
-  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_public': {
       id: '/_public'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof PublicRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_owner': {
+      id: '/_owner'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof OwnerRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -144,27 +152,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/profile': {
-      id: '/dashboard/profile'
-      path: '/profile'
-      fullPath: '/dashboard/profile'
-      preLoaderRoute: typeof DashboardProfileRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/pharmacies': {
-      id: '/dashboard/pharmacies'
-      path: '/pharmacies'
-      fullPath: '/dashboard/pharmacies'
-      preLoaderRoute: typeof DashboardPharmaciesRouteImport
-      parentRoute: typeof DashboardRouteRoute
     }
     '/_public/register': {
       id: '/_public/register'
@@ -180,8 +167,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicLoginRouteImport
       parentRoute: typeof PublicRouteRoute
     }
+    '/_owner/dashboard': {
+      id: '/_owner/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof OwnerDashboardRouteRouteImport
+      parentRoute: typeof OwnerRouteRoute
+    }
+    '/_owner/dashboard/': {
+      id: '/_owner/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof OwnerDashboardIndexRouteImport
+      parentRoute: typeof OwnerDashboardRouteRoute
+    }
+    '/_owner/dashboard/profile': {
+      id: '/_owner/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof OwnerDashboardProfileRouteImport
+      parentRoute: typeof OwnerDashboardRouteRoute
+    }
+    '/_owner/dashboard/pharmacies': {
+      id: '/_owner/dashboard/pharmacies'
+      path: '/pharmacies'
+      fullPath: '/dashboard/pharmacies'
+      preLoaderRoute: typeof OwnerDashboardPharmaciesRouteImport
+      parentRoute: typeof OwnerDashboardRouteRoute
+    }
   }
 }
+
+interface OwnerDashboardRouteRouteChildren {
+  OwnerDashboardPharmaciesRoute: typeof OwnerDashboardPharmaciesRoute
+  OwnerDashboardProfileRoute: typeof OwnerDashboardProfileRoute
+  OwnerDashboardIndexRoute: typeof OwnerDashboardIndexRoute
+}
+
+const OwnerDashboardRouteRouteChildren: OwnerDashboardRouteRouteChildren = {
+  OwnerDashboardPharmaciesRoute: OwnerDashboardPharmaciesRoute,
+  OwnerDashboardProfileRoute: OwnerDashboardProfileRoute,
+  OwnerDashboardIndexRoute: OwnerDashboardIndexRoute,
+}
+
+const OwnerDashboardRouteRouteWithChildren =
+  OwnerDashboardRouteRoute._addFileChildren(OwnerDashboardRouteRouteChildren)
+
+interface OwnerRouteRouteChildren {
+  OwnerDashboardRouteRoute: typeof OwnerDashboardRouteRouteWithChildren
+}
+
+const OwnerRouteRouteChildren: OwnerRouteRouteChildren = {
+  OwnerDashboardRouteRoute: OwnerDashboardRouteRouteWithChildren,
+}
+
+const OwnerRouteRouteWithChildren = OwnerRouteRoute._addFileChildren(
+  OwnerRouteRouteChildren,
+)
 
 interface PublicRouteRouteChildren {
   PublicLoginRoute: typeof PublicLoginRoute
@@ -197,26 +239,10 @@ const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
   PublicRouteRouteChildren,
 )
 
-interface DashboardRouteRouteChildren {
-  DashboardPharmaciesRoute: typeof DashboardPharmaciesRoute
-  DashboardProfileRoute: typeof DashboardProfileRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
-}
-
-const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
-  DashboardPharmaciesRoute: DashboardPharmaciesRoute,
-  DashboardProfileRoute: DashboardProfileRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
-}
-
-const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
-  DashboardRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  OwnerRouteRoute: OwnerRouteRouteWithChildren,
   PublicRouteRoute: PublicRouteRouteWithChildren,
-  DashboardRouteRoute: DashboardRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

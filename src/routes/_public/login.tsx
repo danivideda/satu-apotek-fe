@@ -1,4 +1,5 @@
 import { API_URL } from '#/constants'
+import cn from '#/lib/cn'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import React, { useState } from 'react'
 
@@ -11,6 +12,8 @@ function FormComponent() {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [isError, setIsError] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   function handleChangeUsername(e: React.ChangeEvent<HTMLInputElement>) {
     setUsername(e.target.value)
@@ -20,6 +23,7 @@ function FormComponent() {
   }
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
+    setIsLoading(true)
 
     try {
       const response = await fetch(`${API_URL}/auth/owners/login`, {
@@ -34,9 +38,12 @@ function FormComponent() {
         credentials: 'include',
       })
       if (!response.ok) {
+        setIsLoading(false)
+        setIsError(true)
         const result = await response.json()
         console.log(result)
       } else {
+        console.log("runs navigate")
         navigate({ to: '/dashboard' })
       }
     } catch (error) {
@@ -73,10 +80,19 @@ function FormComponent() {
       </div>
       <button
         type="submit"
-        className="w-full mt-4 bg-blue-50 p-4 rounded-sm cursor-pointer hover:bg-blue-200"
+        // className="w-full h-14 mt-4 bg-blue-50 p-4 rounded-sm cursor-pointer hover:bg-blue-200"
+        className={cn('w-full h-14 mt-4 bg-blue-100 p-4 rounded-sm ', {
+          'cursor-pointer hover:bg-blue-200': !isLoading,
+          'cursor-progress bg-blue-50': isLoading,
+        })}
       >
-        Login
+        {isLoading ? (
+          <div className="h-full mx-auto aspect-square animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+        ) : (
+          'Login'
+        )}
       </button>
+      <div>{isError && 'Something wrong. Please check again.'}</div>
     </form>
   )
 }

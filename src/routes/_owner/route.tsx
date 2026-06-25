@@ -6,13 +6,14 @@ import {
   redirect,
 } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_public')({
-  beforeLoad: async ({context}) => {
-    console.log(`from beforeLoad public routes`)
+export const Route = createFileRoute('/_owner')({
+  beforeLoad: async ({ context }) => {
+    console.log(`from beforeLoad dashboard`)
     try {
       const response = await authOwnerCheck(context.queryClient)
-      if (response.ok) {
-        throw redirect({ to: '/dashboard', replace: true })
+      if (!response.ok) {
+        context.queryClient.invalidateQueries()
+        throw redirect({ to: '/login' })
       }
     } catch (error) {
       if (isRedirect(error)) {
@@ -22,9 +23,6 @@ export const Route = createFileRoute('/_public')({
         console.log(error)
         throw redirect({ to: '/' })
       }
-    } finally {
-      // always invalidate queries after try/catch block is finished
-      context.queryClient.invalidateQueries()
     }
   },
   component: RouteComponent,
