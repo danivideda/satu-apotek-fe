@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { NavBar } from './-components/NavBar'
+import { NavBar2 } from './-components/NavBar2'
 
 export const Route = createFileRoute('/_owner/dashboard')({
   component: RouteComponent,
@@ -7,8 +7,9 @@ export const Route = createFileRoute('/_owner/dashboard')({
 
 function RouteComponent() {
   return (
-    <div className="flex min-h-screen">
-      <NavBar />
+    <div className="flex flex-col min-h-screen">
+      {/* <NavBar /> */}
+      <NavBar2 />
       <div className="flex-8">
         <Outlet />
       </div>

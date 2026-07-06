@@ -11,13 +11,13 @@ function FormComponent() {
   const navigate = Route.useNavigate()
   const context = Route.useRouteContext()
 
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  function handleChangeUsername(e: React.ChangeEvent<HTMLInputElement>) {
-    setUsername(e.target.value)
+  function handleChangeEmail(e: React.ChangeEvent<HTMLInputElement>) {
+    setEmail(e.target.value)
   }
   function handleChangePassword(e: React.ChangeEvent<HTMLInputElement>) {
     setPassword(e.target.value)
@@ -33,7 +33,7 @@ function FormComponent() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: username,
+          email: email,
           password: password,
         }),
         credentials: 'include',
@@ -60,12 +60,12 @@ function FormComponent() {
     >
       <div className="flex flex-col justify-start gap-2">
         <label className="flex flex-col items-start">
-          <span className="text-md text-gray-800 mb-2">Username</span>
+          <span className="text-md text-gray-800 mb-2">Email</span>
           <input
-            name="username"
+            name="email"
             type="text"
-            value={username}
-            onChange={handleChangeUsername}
+            value={email}
+            onChange={handleChangeEmail}
             className="w-full border border-solid border-gray-400 p-2 rounded-sm"
           />
         </label>
@@ -94,7 +94,7 @@ function FormComponent() {
           'Login'
         )}
       </button>
-      <div>{isError && 'Something wrong. Please check again.'}</div>
+      <div className='text-red-400'>{isError && 'Something went wrong. Please check again.'}</div>
     </form>
   )
 }
