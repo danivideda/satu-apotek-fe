@@ -16,8 +16,9 @@ import { Route as PublicRegisterRouteImport } from './routes/_public/register'
 import { Route as PublicLoginRouteImport } from './routes/_public/login'
 import { Route as OwnerDashboardRouteRouteImport } from './routes/_owner/dashboard/route'
 import { Route as OwnerDashboardIndexRouteImport } from './routes/_owner/dashboard/index'
-import { Route as OwnerDashboardProfileRouteImport } from './routes/_owner/dashboard/profile'
 import { Route as OwnerDashboardPharmaciesRouteImport } from './routes/_owner/dashboard/pharmacies'
+import { Route as OwnerDashboardBillingRouteImport } from './routes/_owner/dashboard/billing'
+import { Route as OwnerDashboardAccountRouteImport } from './routes/_owner/dashboard/account'
 
 const PublicRouteRoute = PublicRouteRouteImport.update({
   id: '/_public',
@@ -52,33 +53,40 @@ const OwnerDashboardIndexRoute = OwnerDashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => OwnerDashboardRouteRoute,
 } as any)
-const OwnerDashboardProfileRoute = OwnerDashboardProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => OwnerDashboardRouteRoute,
-} as any)
 const OwnerDashboardPharmaciesRoute =
   OwnerDashboardPharmaciesRouteImport.update({
     id: '/pharmacies',
     path: '/pharmacies',
     getParentRoute: () => OwnerDashboardRouteRoute,
   } as any)
+const OwnerDashboardBillingRoute = OwnerDashboardBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
+  getParentRoute: () => OwnerDashboardRouteRoute,
+} as any)
+const OwnerDashboardAccountRoute = OwnerDashboardAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => OwnerDashboardRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof OwnerDashboardRouteRouteWithChildren
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
+  '/dashboard/account': typeof OwnerDashboardAccountRoute
+  '/dashboard/billing': typeof OwnerDashboardBillingRoute
   '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRoute
-  '/dashboard/profile': typeof OwnerDashboardProfileRoute
   '/dashboard/': typeof OwnerDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
+  '/dashboard/account': typeof OwnerDashboardAccountRoute
+  '/dashboard/billing': typeof OwnerDashboardBillingRoute
   '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRoute
-  '/dashboard/profile': typeof OwnerDashboardProfileRoute
   '/dashboard': typeof OwnerDashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -89,8 +97,9 @@ export interface FileRoutesById {
   '/_owner/dashboard': typeof OwnerDashboardRouteRouteWithChildren
   '/_public/login': typeof PublicLoginRoute
   '/_public/register': typeof PublicRegisterRoute
+  '/_owner/dashboard/account': typeof OwnerDashboardAccountRoute
+  '/_owner/dashboard/billing': typeof OwnerDashboardBillingRoute
   '/_owner/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRoute
-  '/_owner/dashboard/profile': typeof OwnerDashboardProfileRoute
   '/_owner/dashboard/': typeof OwnerDashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -100,16 +109,18 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/register'
+    | '/dashboard/account'
+    | '/dashboard/billing'
     | '/dashboard/pharmacies'
-    | '/dashboard/profile'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/register'
+    | '/dashboard/account'
+    | '/dashboard/billing'
     | '/dashboard/pharmacies'
-    | '/dashboard/profile'
     | '/dashboard'
   id:
     | '__root__'
@@ -119,8 +130,9 @@ export interface FileRouteTypes {
     | '/_owner/dashboard'
     | '/_public/login'
     | '/_public/register'
+    | '/_owner/dashboard/account'
+    | '/_owner/dashboard/billing'
     | '/_owner/dashboard/pharmacies'
-    | '/_owner/dashboard/profile'
     | '/_owner/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -181,13 +193,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OwnerDashboardIndexRouteImport
       parentRoute: typeof OwnerDashboardRouteRoute
     }
-    '/_owner/dashboard/profile': {
-      id: '/_owner/dashboard/profile'
-      path: '/profile'
-      fullPath: '/dashboard/profile'
-      preLoaderRoute: typeof OwnerDashboardProfileRouteImport
-      parentRoute: typeof OwnerDashboardRouteRoute
-    }
     '/_owner/dashboard/pharmacies': {
       id: '/_owner/dashboard/pharmacies'
       path: '/pharmacies'
@@ -195,18 +200,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OwnerDashboardPharmaciesRouteImport
       parentRoute: typeof OwnerDashboardRouteRoute
     }
+    '/_owner/dashboard/billing': {
+      id: '/_owner/dashboard/billing'
+      path: '/billing'
+      fullPath: '/dashboard/billing'
+      preLoaderRoute: typeof OwnerDashboardBillingRouteImport
+      parentRoute: typeof OwnerDashboardRouteRoute
+    }
+    '/_owner/dashboard/account': {
+      id: '/_owner/dashboard/account'
+      path: '/account'
+      fullPath: '/dashboard/account'
+      preLoaderRoute: typeof OwnerDashboardAccountRouteImport
+      parentRoute: typeof OwnerDashboardRouteRoute
+    }
   }
 }
 
 interface OwnerDashboardRouteRouteChildren {
+  OwnerDashboardAccountRoute: typeof OwnerDashboardAccountRoute
+  OwnerDashboardBillingRoute: typeof OwnerDashboardBillingRoute
   OwnerDashboardPharmaciesRoute: typeof OwnerDashboardPharmaciesRoute
-  OwnerDashboardProfileRoute: typeof OwnerDashboardProfileRoute
   OwnerDashboardIndexRoute: typeof OwnerDashboardIndexRoute
 }
 
 const OwnerDashboardRouteRouteChildren: OwnerDashboardRouteRouteChildren = {
+  OwnerDashboardAccountRoute: OwnerDashboardAccountRoute,
+  OwnerDashboardBillingRoute: OwnerDashboardBillingRoute,
   OwnerDashboardPharmaciesRoute: OwnerDashboardPharmaciesRoute,
-  OwnerDashboardProfileRoute: OwnerDashboardProfileRoute,
   OwnerDashboardIndexRoute: OwnerDashboardIndexRoute,
 }
 
