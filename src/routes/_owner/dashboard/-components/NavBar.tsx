@@ -1,5 +1,6 @@
 import cn from '#/lib/cn'
-import { Link } from '@tanstack/react-router'
+import { fetchHelper } from '#/lib/fetch'
+import { Link, useNavigate, useRouteContext } from '@tanstack/react-router'
 
 export function NavBar() {
   return (
@@ -13,12 +14,12 @@ export function NavBar() {
 
 function NavMenuComponent() {
   const navItemCn = (active: boolean) =>
-    cn('py-2 px-5 bg-transparent text-gray-400 rounded-3xl', {
-      'bg-primary text-white': active,
+    cn('py-2 px-5 bg-transparent hover:text-black text-gray-400 rounded-3xl', {
+      'bg-primary text-white hover:text-white': active,
     })
 
   return (
-    <div className="flex flex-row flex-1 p-3 bg-muted-primary/50 border border-primary rounded-4xl h-fit">
+    <div className="flex flex-row justify-between w-75 p-3 bg-muted-primary border border-primary rounded-4xl h-fit">
       <Link to="/dashboard/pharmacies">
         {({ isActive }) => <div className={navItemCn(isActive)}>Apotek</div>}
       </Link>
@@ -43,11 +44,35 @@ function BrandComponent() {
 }
 
 function ProfileComponent() {
+  const routeContext = useRouteContext({ from: '/_owner/dashboard' })
+  const navigate = useNavigate()
+
+  async function handleLogout() {
+    try {
+      const response = await fetchHelper('/auth/owners/logout', 'POST')
+      if (!response.ok) {
+        const message = (await response.json()).error
+        throw new Error(`Error happened status: ${response.status}, ${message}`)
+      }
+
+      routeContext.queryClient.invalidateQueries()
+
+      navigate({ to: '/login' })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div className="flex flex-row flex-2 justify-end items-center gap-2 h-full">
-      <div className="flex flex-col justify-center items-end h-fit">
-        <span className="">test1</span>
-        <span className="text-sm text-gray-500">Logout</span>
+      <div className="flex flex-col justify-center items-end h-fit text-right w-full">
+        <span className="text-lg">test1</span>
+        <span
+          className="text-sm text-gray-500 hover:bg-gray-100 hover:text-black cursor-pointer"
+          onClick={handleLogout}
+        >
+          Logout -{`>`}
+        </span>
       </div>
     </div>
   )

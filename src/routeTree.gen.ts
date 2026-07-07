@@ -19,6 +19,7 @@ import { Route as OwnerDashboardIndexRouteImport } from './routes/_owner/dashboa
 import { Route as OwnerDashboardPharmaciesRouteImport } from './routes/_owner/dashboard/pharmacies'
 import { Route as OwnerDashboardBillingRouteImport } from './routes/_owner/dashboard/billing'
 import { Route as OwnerDashboardAccountRouteImport } from './routes/_owner/dashboard/account'
+import { Route as OwnerDashboardPharmaciesAppIdRouteImport } from './routes/_owner/dashboard/pharmacies.$appId'
 
 const PublicRouteRoute = PublicRouteRouteImport.update({
   id: '/_public',
@@ -69,6 +70,12 @@ const OwnerDashboardAccountRoute = OwnerDashboardAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => OwnerDashboardRouteRoute,
 } as any)
+const OwnerDashboardPharmaciesAppIdRoute =
+  OwnerDashboardPharmaciesAppIdRouteImport.update({
+    id: '/$appId',
+    path: '/$appId',
+    getParentRoute: () => OwnerDashboardPharmaciesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -77,8 +84,9 @@ export interface FileRoutesByFullPath {
   '/register': typeof PublicRegisterRoute
   '/dashboard/account': typeof OwnerDashboardAccountRoute
   '/dashboard/billing': typeof OwnerDashboardBillingRoute
-  '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRoute
+  '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRouteWithChildren
   '/dashboard/': typeof OwnerDashboardIndexRoute
+  '/dashboard/pharmacies/$appId': typeof OwnerDashboardPharmaciesAppIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,8 +94,9 @@ export interface FileRoutesByTo {
   '/register': typeof PublicRegisterRoute
   '/dashboard/account': typeof OwnerDashboardAccountRoute
   '/dashboard/billing': typeof OwnerDashboardBillingRoute
-  '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRoute
+  '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRouteWithChildren
   '/dashboard': typeof OwnerDashboardIndexRoute
+  '/dashboard/pharmacies/$appId': typeof OwnerDashboardPharmaciesAppIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -99,8 +108,9 @@ export interface FileRoutesById {
   '/_public/register': typeof PublicRegisterRoute
   '/_owner/dashboard/account': typeof OwnerDashboardAccountRoute
   '/_owner/dashboard/billing': typeof OwnerDashboardBillingRoute
-  '/_owner/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRoute
+  '/_owner/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRouteWithChildren
   '/_owner/dashboard/': typeof OwnerDashboardIndexRoute
+  '/_owner/dashboard/pharmacies/$appId': typeof OwnerDashboardPharmaciesAppIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -113,6 +123,7 @@ export interface FileRouteTypes {
     | '/dashboard/billing'
     | '/dashboard/pharmacies'
     | '/dashboard/'
+    | '/dashboard/pharmacies/$appId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/dashboard/billing'
     | '/dashboard/pharmacies'
     | '/dashboard'
+    | '/dashboard/pharmacies/$appId'
   id:
     | '__root__'
     | '/'
@@ -134,6 +146,7 @@ export interface FileRouteTypes {
     | '/_owner/dashboard/billing'
     | '/_owner/dashboard/pharmacies'
     | '/_owner/dashboard/'
+    | '/_owner/dashboard/pharmacies/$appId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -214,20 +227,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OwnerDashboardAccountRouteImport
       parentRoute: typeof OwnerDashboardRouteRoute
     }
+    '/_owner/dashboard/pharmacies/$appId': {
+      id: '/_owner/dashboard/pharmacies/$appId'
+      path: '/$appId'
+      fullPath: '/dashboard/pharmacies/$appId'
+      preLoaderRoute: typeof OwnerDashboardPharmaciesAppIdRouteImport
+      parentRoute: typeof OwnerDashboardPharmaciesRoute
+    }
   }
 }
+
+interface OwnerDashboardPharmaciesRouteChildren {
+  OwnerDashboardPharmaciesAppIdRoute: typeof OwnerDashboardPharmaciesAppIdRoute
+}
+
+const OwnerDashboardPharmaciesRouteChildren: OwnerDashboardPharmaciesRouteChildren =
+  {
+    OwnerDashboardPharmaciesAppIdRoute: OwnerDashboardPharmaciesAppIdRoute,
+  }
+
+const OwnerDashboardPharmaciesRouteWithChildren =
+  OwnerDashboardPharmaciesRoute._addFileChildren(
+    OwnerDashboardPharmaciesRouteChildren,
+  )
 
 interface OwnerDashboardRouteRouteChildren {
   OwnerDashboardAccountRoute: typeof OwnerDashboardAccountRoute
   OwnerDashboardBillingRoute: typeof OwnerDashboardBillingRoute
-  OwnerDashboardPharmaciesRoute: typeof OwnerDashboardPharmaciesRoute
+  OwnerDashboardPharmaciesRoute: typeof OwnerDashboardPharmaciesRouteWithChildren
   OwnerDashboardIndexRoute: typeof OwnerDashboardIndexRoute
 }
 
 const OwnerDashboardRouteRouteChildren: OwnerDashboardRouteRouteChildren = {
   OwnerDashboardAccountRoute: OwnerDashboardAccountRoute,
   OwnerDashboardBillingRoute: OwnerDashboardBillingRoute,
-  OwnerDashboardPharmaciesRoute: OwnerDashboardPharmaciesRoute,
+  OwnerDashboardPharmaciesRoute: OwnerDashboardPharmaciesRouteWithChildren,
   OwnerDashboardIndexRoute: OwnerDashboardIndexRoute,
 }
 

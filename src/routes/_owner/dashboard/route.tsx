@@ -7,9 +7,9 @@ export const Route = createFileRoute('/_owner/dashboard')({
 
 function RouteComponent() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen w-full">
       <NavBar />
-      <div className="flex-8">
+      <div className="flex-1 container mx-auto">
         <Outlet />
       </div>
     </div>
