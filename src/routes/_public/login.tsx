@@ -1,7 +1,7 @@
 import { API_URL } from '#/constants'
 import cn from '#/lib/cn'
 import { createFileRoute } from '@tanstack/react-router'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 export const Route = createFileRoute('/_public/login')({
   component: RouteComponent,
@@ -11,16 +11,16 @@ function FormComponent() {
   const navigate = Route.useNavigate()
   const context = Route.useRouteContext()
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const emailRef = useRef('')
+  const passwordRef = useRef('')
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   function handleChangeEmail(e: React.ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value)
+    emailRef.current = e.target.value
   }
   function handleChangePassword(e: React.ChangeEvent<HTMLInputElement>) {
-    setPassword(e.target.value)
+    passwordRef.current = e.target.value
   }
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -33,8 +33,8 @@ function FormComponent() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: email,
-          password: password,
+          email: emailRef.current,
+          password: passwordRef.current,
         }),
         credentials: 'include',
       })
@@ -46,7 +46,7 @@ function FormComponent() {
       } else {
         context.queryClient.invalidateQueries()
         console.log('runs navigate')
-        navigate({ to: '/dashboard' })
+        navigate({ to: '/dashboard/pharmacies' })
       }
     } catch (error) {
       console.log(error)
@@ -64,7 +64,6 @@ function FormComponent() {
           <input
             name="email"
             type="text"
-            value={email}
             onChange={handleChangeEmail}
             className="w-full border border-solid border-gray-400 p-2 rounded-sm"
           />
@@ -74,7 +73,6 @@ function FormComponent() {
           <input
             name="password"
             type="password"
-            value={password}
             onChange={handleChangePassword}
             className="w-full border border-solid border-gray-400 p-2 rounded-sm"
           />
@@ -82,10 +80,9 @@ function FormComponent() {
       </div>
       <button
         type="submit"
-        // className="w-full h-14 mt-4 bg-blue-50 p-4 rounded-sm cursor-pointer hover:bg-blue-200"
-        className={cn('w-full h-14 mt-4 bg-blue-100 p-4 rounded-sm ', {
-          'cursor-pointer hover:bg-blue-200': !isLoading,
-          'cursor-progress bg-blue-50': isLoading,
+        className={cn('w-full h-14 mt-4 bg-secondary p-4 rounded-sm ', {
+          'cursor-pointer hover:bg-primary hover:text-white': !isLoading,
+          'cursor-progress bg-secondary': isLoading,
         })}
       >
         {isLoading ? (
@@ -94,7 +91,9 @@ function FormComponent() {
           'Login'
         )}
       </button>
-      <div className='text-red-400'>{isError && 'Something went wrong. Please check again.'}</div>
+      <div className="text-red-400">
+        {isError && 'Something went wrong. Please check again.'}
+      </div>
     </form>
   )
 }

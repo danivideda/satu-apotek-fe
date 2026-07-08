@@ -1,6 +1,12 @@
 import cn from '#/lib/cn'
 import { fetchHelper } from '#/lib/fetch'
-import { Link, useNavigate, useRouteContext } from '@tanstack/react-router'
+import {
+  createLink,
+  useNavigate,
+  useRouteContext,
+  type LinkComponent,
+} from '@tanstack/react-router'
+import React from 'react'
 
 export function NavBar() {
   return (
@@ -13,24 +19,47 @@ export function NavBar() {
 }
 
 function NavMenuComponent() {
-  const navItemCn = (active: boolean) =>
-    cn('py-2 px-5 bg-transparent hover:text-black text-gray-400 rounded-3xl', {
-      'bg-primary text-white hover:text-white': active,
-    })
+  const NavItemComponent = createNavItemComponent()
 
   return (
     <div className="flex flex-row justify-between w-75 p-3 bg-muted-primary border border-primary rounded-4xl h-fit">
-      <Link to="/dashboard/pharmacies">
-        {({ isActive }) => <div className={navItemCn(isActive)}>Apotek</div>}
-      </Link>
-      <Link to="/dashboard/account">
-        {({ isActive }) => <div className={navItemCn(isActive)}>Account</div>}
-      </Link>
-      <Link to="/dashboard/billing">
-        {({ isActive }) => <div className={navItemCn(isActive)}>Billing</div>}
-      </Link>
+      <NavItemComponent to="/dashboard/pharmacies" label="Apotek" />
+      <NavItemComponent to="/dashboard/account" label="Account" />
+      <NavItemComponent to="/dashboard/billing" label="Billing" />
     </div>
   )
+}
+
+function createNavItemComponent() {
+  interface BasicLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+    label: string
+  }
+
+  const BasicLinkComponent = React.forwardRef<
+    HTMLAnchorElement,
+    BasicLinkProps
+  >((props, ref) => {
+    return <a ref={ref} {...props} />
+  })
+
+  const CreatedLinkComponent = createLink(BasicLinkComponent)
+  const navItemCn = (active: boolean) =>
+    cn('py-2 px-5 bg-transparent hover:text-black text-gray-400 rounded-3xl', {
+      'bg-primary text-white hover:text-white transition-colors ease-in-out':
+        active,
+      'hover:text-black transition-all ease-in-out': !active,
+    })
+  const CustomLink: LinkComponent<typeof BasicLinkComponent> = (props) => {
+    return (
+      <CreatedLinkComponent {...props}>
+        {({ isActive }) => (
+          <div className={navItemCn(isActive)}>{props.label}</div>
+        )}
+      </CreatedLinkComponent>
+    )
+  }
+
+  return CustomLink
 }
 
 function BrandComponent() {
