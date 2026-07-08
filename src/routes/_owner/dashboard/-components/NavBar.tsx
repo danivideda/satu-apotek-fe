@@ -10,7 +10,7 @@ import React from 'react'
 
 export function NavBar() {
   return (
-    <div className="flex flex-row justify-between items-center w-full py-2.5 px-4 min-w-158 border-b border-gray-200 backdrop-blur-[20px] backdrop-saturate-50 bg-white/70 sticky top-0">
+    <div className="flex flex-row justify-between items-start w-full py-2.5 px-4 min-w-158 backdrop-blur-[20px] backdrop-saturate-70 bg-white/70 sticky top-0">
       <BrandComponent />
       <NavMenuComponent />
       <ProfileComponent />

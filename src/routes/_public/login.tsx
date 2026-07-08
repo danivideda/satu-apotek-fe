@@ -80,10 +80,13 @@ function FormComponent() {
       </div>
       <button
         type="submit"
-        className={cn('w-full h-14 mt-4 bg-secondary p-4 rounded-sm ', {
-          'cursor-pointer hover:bg-primary hover:text-white': !isLoading,
-          'cursor-progress bg-secondary': isLoading,
-        })}
+        className={cn(
+          'w-full h-14 mt-4 text-white bg-primary p-4 rounded-sm transition-colors ease-in-out',
+          {
+            'cursor-pointer hover:bg-green-400': !isLoading,
+            'cursor-progress bg-secondary': isLoading,
+          },
+        )}
       >
         {isLoading ? (
           <div className="h-full mx-auto aspect-square animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />

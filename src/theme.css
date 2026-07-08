@@ -1,4 +1,5 @@
 @theme {
+  --default-font-family: "Inter", sans-serif;
   --color-primary: var(--color-green-500);
   --color-secondary: var(--color-green-200);
   --color-muted-primary: var(--color-green-50);

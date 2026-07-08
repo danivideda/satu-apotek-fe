@@ -14,35 +14,39 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col px-4">
-      <h1 className="mt-4 text-4xl text-black">Apotek</h1>
+      <h1 className="mt-4 p-4 text-2xl border-b border-gray-200 text-black">Pengaturan Apotek</h1>
       <div className="flex flex-row flex-1 gap-2 mt-4">
         <section className="flex flex-col justify-center flex-1 p-4 text-right text-3xl">
           <span className="font-light">
-            Pilih <span className="text-green-600">Apotek</span> yang anda
+            Pilih <span className="font-normal text-green-600">Apotek</span> yang anda
             kelola
           </span>
         </section>
         <section className="flex flex-col p-4 flex-1">
-          {data.map((pharmacy, index) => (
-            <div
-              key={pharmacy.app_id}
-              className="flex flex-row gap-3 p-2 py-4 border-b border-gray-200"
-            >
-              <div className="flex flex-col justify-center text-gray-800">
-                <div>{index + 1}</div>
-              </div>
-              <div>
-                <div className="text-black font-semibold">{pharmacy.name}</div>
-                <div className="text-gray-500 tracking-tight font-light">
-                  {pharmacy.address}
+          <div>
+            {data.map((pharmacy, index) => (
+              <div
+                key={pharmacy.app_id}
+                className="flex flex-row gap-3 p-2 py-4 hover:bg-gray-50 cursor-pointer transition-colors ease-in-out border-b border-gray-200 last:border-dashed"
+              >
+                <div className="flex flex-col justify-center text-gray-800">
+                  <div>{index + 1}</div>
                 </div>
-                <div className="text-sm text-gray-500 tracking-tight font-light">
-                  {pharmacy.app_id}
+                <div>
+                  <div className="text-black font-semibold">
+                    {pharmacy.name}
+                  </div>
+                  <div className="text-gray-500 tracking-tight font-light">
+                    {pharmacy.address}
+                  </div>
+                  <div className="text-sm text-gray-500 tracking-tight font-light">
+                    {pharmacy.app_id}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-          <div className="flex flex-col justify-center h-14 border-b border-dashed border-gray-200">
+            ))}
+          </div>
+          <div className="flex flex-col justify-center h-14 border-b border-dashed border-gray-200 hover:bg-muted-primary cursor-pointer transition-colors ease-in-out">
             <span className="text-center text-green-600">Tambah apotek</span>
           </div>
         </section>
