@@ -1,9 +1,10 @@
+import cn from '#/lib/cn'
 import { fetchHelper } from '#/lib/fetch'
 import { queryOptions } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { z } from 'zod'
 
-export const Route = createFileRoute('/_owner/dashboard/pharmacies')({
+export const Route = createFileRoute('/_owner/dashboard/pharmacies/')({
   loader: async ({ context }) =>
     context.queryClient.fetchQuery(pharmaciesQueryOptions),
   component: RouteComponent,
@@ -14,36 +15,48 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col px-4">
-      <h1 className="mt-4 p-4 text-2xl border-b border-gray-200 text-black">Pengaturan Apotek</h1>
+      <h1 className="mt-4 p-4 text-2xl border-b border-gray-200 text-gray-500 font-light">
+        Pengaturan Apotek
+      </h1>
       <div className="flex flex-row flex-1 gap-2 mt-4">
         <section className="flex flex-col justify-center flex-1 p-4 text-right text-3xl">
           <span className="font-light">
-            Pilih <span className="font-normal text-green-600">Apotek</span> yang anda
-            kelola
+            Pilih <span className="font-normal text-green-600">Apotek</span>{' '}
+            yang anda kelola
           </span>
         </section>
         <section className="flex flex-col p-4 flex-1">
           <div>
             {data.map((pharmacy, index) => (
-              <div
+              <Link
                 key={pharmacy.app_id}
-                className="flex flex-row gap-3 p-2 py-4 hover:bg-gray-50 cursor-pointer transition-colors ease-in-out border-b border-gray-200 last:border-dashed"
+                to="/dashboard/pharmacies/$appID"
+                params={{ appID: pharmacy.app_id }}
+                preload="intent"
               >
-                <div className="flex flex-col justify-center text-gray-800">
-                  <div>{index + 1}</div>
+                <div
+                  className={cn(
+                    'flex flex-row gap-3 p-2 py-4',
+                    'border-b border-gray-200 last:border-dashed',
+                    'hover:bg-green-50 cursor-pointer transition-colors ease-in-out',
+                  )}
+                >
+                  <div className="flex flex-col justify-center text-gray-800">
+                    <div>{index + 1}</div>
+                  </div>
+                  <div>
+                    <div className="text-black font-semibold">
+                      {pharmacy.name}
+                    </div>
+                    <div className="text-gray-500 tracking-tight font-light">
+                      {pharmacy.address}
+                    </div>
+                    <div className="text-sm text-gray-500 tracking-tight font-light">
+                      {pharmacy.app_id}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-black font-semibold">
-                    {pharmacy.name}
-                  </div>
-                  <div className="text-gray-500 tracking-tight font-light">
-                    {pharmacy.address}
-                  </div>
-                  <div className="text-sm text-gray-500 tracking-tight font-light">
-                    {pharmacy.app_id}
-                  </div>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
           <div className="flex flex-col justify-center h-14 border-b border-dashed border-gray-200 hover:bg-muted-primary cursor-pointer transition-colors ease-in-out">
@@ -55,12 +68,10 @@ function RouteComponent() {
   )
 }
 
-const PharmacySchema = z.object({
+export const PharmacySchema = z.object({
   app_id: z.string(),
   name: z.string(),
   address: z.string(),
-  created_at: z.iso.datetime({ offset: true }),
-  updated_at: z.iso.datetime({ offset: true }),
 })
 const ResponseSchema = z.object({
   data: z.array(PharmacySchema),
@@ -70,7 +81,7 @@ const pharmaciesQueryOptions = queryOptions({
   queryKey: ['pharmacies'],
   queryFn: async () => {
     console.log('query fn from /pharmacies loader')
-    const response = await fetchHelper('/pharmacies')
+    const response = await fetchHelper('/owner/pharmacies')
     if (!response.ok) {
       throw new Error(`Bad response, status: ${response.status}`)
     }
