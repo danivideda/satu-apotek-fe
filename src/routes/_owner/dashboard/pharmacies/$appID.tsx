@@ -5,6 +5,11 @@ import z from 'zod'
 import { PharmacySchema } from '.'
 
 export const Route = createFileRoute('/_owner/dashboard/pharmacies/$appID')({
+  staticData: {
+    breadcrumb: (match) => {
+      return { label: match.loaderData.data.name, path: match.pathname }
+    },
+  },
   loader: async ({ context, params }) =>
     context.queryClient.fetchQuery(pharmacyDetailQueryOptions(params.appID)),
   component: RouteComponent,
@@ -13,6 +18,7 @@ export const Route = createFileRoute('/_owner/dashboard/pharmacies/$appID')({
 function RouteComponent() {
   const responseJSON = Route.useLoaderData()
   const data = responseJSON.data
+
   return (
     <div>
       <div>AppID: {data.app_id}</div>
