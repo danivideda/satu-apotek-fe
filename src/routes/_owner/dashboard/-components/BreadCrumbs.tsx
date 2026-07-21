@@ -1,5 +1,5 @@
 import cn from '#/lib/cn'
-import { Link, useMatches, useNavigate } from '@tanstack/react-router'
+import { Link, useMatches } from '@tanstack/react-router'
 import { Fragment } from 'react/jsx-runtime'
 
 export type BreadCrumbValue = {
@@ -9,18 +9,12 @@ export type BreadCrumbValue = {
 
 export function BreadCrumbs() {
   const matches = useMatches()
-  const navigate = useNavigate()
   const list: BreadCrumbValue[] = matches.flatMap((match) => {
-    if (match.staticData.breadcrumb == undefined) {
+    const label: string = (match.loaderData as any)?.label
+    if (!label) {
       return []
     }
-    try {
-      const value = match.staticData.breadcrumb(match)
-      return value
-    } catch (error) {
-      console.log(error)
-      throw navigate({to: '/dashboard/pharmacies'})
-    }
+    return { label: label, path: match.pathname }
   })
 
   function BreadCrumbItem({

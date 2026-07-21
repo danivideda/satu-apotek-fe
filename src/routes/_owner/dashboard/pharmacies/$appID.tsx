@@ -1,23 +1,35 @@
 import { fetchHelper } from '#/lib/fetch'
-import { queryOptions } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { queryOptions, useQuery } from '@tanstack/react-query'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import z from 'zod'
 import { PharmacySchema } from '.'
 
 export const Route = createFileRoute('/_owner/dashboard/pharmacies/$appID')({
-  staticData: {
-    breadcrumb: (match) => {
-      return { label: match.loaderData.data.name, path: match.pathname }
-    },
+  loader: async ({ context, params }) => {
+    try {
+      const { data } = await context.queryClient.fetchQuery(
+        pharmacyDetailQueryOptions(params.appID),
+      )
+      return {
+        label: data.name,
+      }
+    } catch (error) {
+      console.log(error)
+      throw redirect({ to: '/dashboard/pharmacies' })
+    }
   },
-  loader: async ({ context, params }) =>
-    context.queryClient.fetchQuery(pharmacyDetailQueryOptions(params.appID)),
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const responseJSON = Route.useLoaderData()
-  const data = responseJSON.data
+  const params = Route.useParams()
+  const { status, data: response } = useQuery(
+    pharmacyDetailQueryOptions(params.appID),
+  )
+  if (status === 'pending') return <div>Loading status: pending...</div>
+  if (status === 'error') return <div>Something went wrong...</div>
+
+  const data = response.data
 
   return (
     <div>
@@ -35,11 +47,13 @@ function RouteComponent() {
   )
 }
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const pharmacyDetailQueryOptions = (appID: string) =>
   queryOptions({
     queryKey: ['pharmacies', appID],
     queryFn: async () => {
       console.log(`query fn from /pharmacies/${appID} loader`)
+      // await delay(5000)
       const response = await fetchHelper(`/owner/pharmacies/${appID}`)
       if (!response.ok) {
         throw new Error(`Bad response, status: ${response.status}`)
@@ -47,7 +61,7 @@ const pharmacyDetailQueryOptions = (appID: string) =>
       const responseJSON = ResponseSchema.parse(await response.json())
       return responseJSON
     },
-    staleTime: 5_000,
+    staleTime: 5000,
   })
 
 const ResponseSchema = z.object({

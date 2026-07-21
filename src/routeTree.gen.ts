@@ -9,60 +9,60 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as PublicRouteRouteImport } from './routes/_public/route'
-import { Route as OwnerRouteRouteImport } from './routes/_owner/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PublicRegisterRouteImport } from './routes/_public/register'
-import { Route as PublicLoginRouteImport } from './routes/_public/login'
+import { Route as OwnerRouteRouteImport } from './routes/_owner/route'
+import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as OwnerDashboardRouteRouteImport } from './routes/_owner/dashboard/route'
+import { Route as PublicLoginRouteImport } from './routes/_public/login'
+import { Route as PublicRegisterRouteImport } from './routes/_public/register'
 import { Route as OwnerDashboardIndexRouteImport } from './routes/_owner/dashboard/index'
-import { Route as OwnerDashboardBillingRouteImport } from './routes/_owner/dashboard/billing'
 import { Route as OwnerDashboardAccountRouteImport } from './routes/_owner/dashboard/account'
+import { Route as OwnerDashboardBillingRouteImport } from './routes/_owner/dashboard/billing'
 import { Route as OwnerDashboardPharmaciesRouteRouteImport } from './routes/_owner/dashboard/pharmacies/route'
 import { Route as OwnerDashboardPharmaciesIndexRouteImport } from './routes/_owner/dashboard/pharmacies/index'
 import { Route as OwnerDashboardPharmaciesAppIDRouteImport } from './routes/_owner/dashboard/pharmacies/$appID'
 
-const PublicRouteRoute = PublicRouteRouteImport.update({
-  id: '/_public',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OwnerRouteRoute = OwnerRouteRouteImport.update({
   id: '/_owner',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const PublicRouteRoute = PublicRouteRouteImport.update({
+  id: '/_public',
   getParentRoute: () => rootRouteImport,
-} as any)
-const PublicRegisterRoute = PublicRegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => PublicRouteRoute,
-} as any)
-const PublicLoginRoute = PublicLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => PublicRouteRoute,
 } as any)
 const OwnerDashboardRouteRoute = OwnerDashboardRouteRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => OwnerRouteRoute,
 } as any)
+const PublicLoginRoute = PublicLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
+const PublicRegisterRoute = PublicRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
 const OwnerDashboardIndexRoute = OwnerDashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => OwnerDashboardRouteRoute,
 } as any)
-const OwnerDashboardBillingRoute = OwnerDashboardBillingRouteImport.update({
-  id: '/billing',
-  path: '/billing',
-  getParentRoute: () => OwnerDashboardRouteRoute,
-} as any)
 const OwnerDashboardAccountRoute = OwnerDashboardAccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => OwnerDashboardRouteRoute,
+} as any)
+const OwnerDashboardBillingRoute = OwnerDashboardBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
   getParentRoute: () => OwnerDashboardRouteRoute,
 } as any)
 const OwnerDashboardPharmaciesRouteRoute =
@@ -168,11 +168,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_public': {
-      id: '/_public'
-      path: ''
+    '/': {
+      id: '/'
+      path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof PublicRouteRouteImport
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_owner': {
@@ -182,26 +182,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OwnerRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
+    '/_public': {
+      id: '/_public'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof PublicRouteRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_public/register': {
-      id: '/_public/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof PublicRegisterRouteImport
-      parentRoute: typeof PublicRouteRoute
-    }
-    '/_public/login': {
-      id: '/_public/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof PublicLoginRouteImport
-      parentRoute: typeof PublicRouteRoute
     }
     '/_owner/dashboard': {
       id: '/_owner/dashboard'
@@ -210,6 +196,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OwnerDashboardRouteRouteImport
       parentRoute: typeof OwnerRouteRoute
     }
+    '/_public/login': {
+      id: '/_public/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof PublicLoginRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
+    '/_public/register': {
+      id: '/_public/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof PublicRegisterRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
     '/_owner/dashboard/': {
       id: '/_owner/dashboard/'
       path: '/'
@@ -217,18 +217,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OwnerDashboardIndexRouteImport
       parentRoute: typeof OwnerDashboardRouteRoute
     }
-    '/_owner/dashboard/billing': {
-      id: '/_owner/dashboard/billing'
-      path: '/billing'
-      fullPath: '/dashboard/billing'
-      preLoaderRoute: typeof OwnerDashboardBillingRouteImport
-      parentRoute: typeof OwnerDashboardRouteRoute
-    }
     '/_owner/dashboard/account': {
       id: '/_owner/dashboard/account'
       path: '/account'
       fullPath: '/dashboard/account'
       preLoaderRoute: typeof OwnerDashboardAccountRouteImport
+      parentRoute: typeof OwnerDashboardRouteRoute
+    }
+    '/_owner/dashboard/billing': {
+      id: '/_owner/dashboard/billing'
+      path: '/billing'
+      fullPath: '/dashboard/billing'
+      preLoaderRoute: typeof OwnerDashboardBillingRouteImport
       parentRoute: typeof OwnerDashboardRouteRoute
     }
     '/_owner/dashboard/pharmacies': {

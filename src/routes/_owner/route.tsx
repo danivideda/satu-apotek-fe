@@ -8,7 +8,6 @@ import {
 
 export const Route = createFileRoute('/_owner')({
   beforeLoad: async ({ context }) => {
-    console.log(`from beforeLoad dashboard`)
     try {
       const response = await authOwnerCheck(context.queryClient)
       if (!response.ok) {
