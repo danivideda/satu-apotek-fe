@@ -7,11 +7,12 @@ export const Route = createFileRoute('/_owner/dashboard')({
 })
 
 function RouteComponent() {
+  const authOwner = Route.useRouteContext().authOwner
   return (
     <div className="flex flex-col min-h-screen w-full">
-      <NavBar />
+      <NavBar profileName={authOwner}/>
       <div className="flex-1 container mx-auto">
-        <h1 className="mt-4 p-4 text-2xl border-b border-gray-200 text-gray-500 font-light">
+        <h1 className="mt-4 p-4 text-2xl border-b border-white text-gray-500 font-light">
           <BreadCrumbs />
         </h1>
         <Outlet />

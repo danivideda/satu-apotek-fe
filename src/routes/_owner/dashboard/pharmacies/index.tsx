@@ -5,7 +5,11 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { z } from 'zod'
 
 export const Route = createFileRoute('/_owner/dashboard/pharmacies/')({
+  loader: ({ context }) =>
+    // context.queryClient.ensureQueryData(pharmaciesQueryOptions),
+    context.queryClient.fetchQuery(pharmaciesQueryOptions),
   component: RouteComponent,
+  pendingComponent: () => <div>Loading pharmacies...</div>
 })
 
 function RouteComponent() {
@@ -74,12 +78,11 @@ const ResponseSchema = z.object({
   data: z.array(PharmacySchema),
 })
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const pharmaciesQueryOptions = queryOptions({
   queryKey: ['pharmacies'],
   queryFn: async () => {
     console.log('query fn from /pharmacies loader')
-    // await delay(5000)
     const response = await fetchHelper('/owner/pharmacies')
     if (!response.ok) {
       throw new Error(`Bad response, status: ${response.status}`)

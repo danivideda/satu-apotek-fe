@@ -6,14 +6,31 @@ import {
   useRouteContext,
   type LinkComponent,
 } from '@tanstack/react-router'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-export function NavBar() {
+export function NavBar({ profileName }: { profileName: string }) {
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Toggle state when user scrolled passed 10px
+      setIsScrolled(window.scrollY > 10)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <div className="flex flex-row justify-between items-start w-full py-2.5 px-4 min-w-158 backdrop-blur-[20px] backdrop-saturate-70 bg-white/70 sticky top-0">
+    <div
+      className={cn(
+        'flex flex-row justify-between items-start w-full py-2.5 px-4 min-w-158 backdrop-blur-[20px] backdrop-saturate-70 bg-white/70 sticky top-0',
+        { 'border-b border-b-gray-100': isScrolled },
+      )}
+    >
       <BrandComponent />
       <NavMenuComponent />
-      <ProfileComponent />
+      <ProfileComponent name={profileName} />
     </div>
   )
 }
@@ -72,7 +89,7 @@ function BrandComponent() {
   )
 }
 
-function ProfileComponent() {
+function ProfileComponent({ name }: { name: string }) {
   const routeContext = useRouteContext({ from: '/_owner/dashboard' })
   const navigate = useNavigate()
 
@@ -95,7 +112,7 @@ function ProfileComponent() {
   return (
     <div className="flex flex-row flex-2 justify-end items-center gap-2 h-full">
       <div className="flex flex-col justify-center items-end h-fit text-right w-full">
-        <span className="text-lg">test1</span>
+        <span className="text-lg">{name}</span>
         <span
           className="text-sm text-gray-500 hover:bg-gray-100 hover:text-black cursor-pointer"
           onClick={handleLogout}

@@ -12,7 +12,10 @@ export const Route = createFileRoute('/_owner')({
       const response = await authOwnerCheck(context.queryClient)
       if (!response.ok) {
         context.queryClient.invalidateQueries()
-        throw redirect({ to: '/login' })
+        throw redirect({ to: '/login', search: { redirect: location.href } })
+      }
+      return {
+        authOwner: "Nama Owner Pengguna"
       }
     } catch (error) {
       if (isRedirect(error)) {

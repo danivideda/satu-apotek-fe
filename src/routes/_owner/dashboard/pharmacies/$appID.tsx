@@ -3,6 +3,8 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import z from 'zod'
 import { PharmacySchema } from '.'
+import { Edit2Icon } from 'lucide-react'
+import cn from '#/lib/cn'
 
 export const Route = createFileRoute('/_owner/dashboard/pharmacies/$appID')({
   loader: async ({ context, params }) => {
@@ -32,22 +34,87 @@ function RouteComponent() {
   const data = response.data
 
   return (
+    <div className="flex flex-col gap-1.5">
+      <SectionComponent label="Deskripsi Apotek">
+        <DeskripsiItemComponent label="Nama" desc={data.name} />
+        <DeskripsiItemComponent label="Alamat" desc={data.address} />
+        <DeskripsiItemComponent
+          label="AppID"
+          desc={data.app_id}
+          editable={false}
+        />
+      </SectionComponent>
+      <SectionComponent label="Pengaturan User">
+        <UserTableComponent>
+          {data.users.map((item, index) => (
+            <UserItemComponent key={item.id + index} name={item.username} />
+          ))}
+        </UserTableComponent>
+      </SectionComponent>
+    </div>
+  )
+}
+
+function SectionComponent({
+  label,
+  children,
+}: React.PropsWithChildren<{ label: string }>) {
+  return (
     <div>
-      <div>AppID: {data.app_id}</div>
-      <div>Name: {data.name}</div>
-      <div>
-        Users:{' '}
-        {data.users.map((item, index) => (
-          <div key={item.id}>
-            {index + 1}. id: {item.id}, username: {item.username}
-          </div>
-        ))}
+      <div>{label}</div>
+      <div className="flex flex-col justify-between container p-4">
+        {children}
       </div>
     </div>
   )
 }
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+function DeskripsiItemComponent({
+  label,
+  desc,
+  editable = true,
+}: {
+  label: string
+  desc: string
+  editable?: boolean
+}) {
+  return (
+    <div className="flex flex-row justify-between items-center p-3 border-b border-gray-100">
+      <div className="flex flex-col">
+        <div className="text-green-600 text-sm font-semibold">{label}</div>
+        <div className="">{desc}</div>
+      </div>
+      <Edit2Icon size={13} className={cn({ hidden: !editable })} />
+    </div>
+  )
+}
+
+function UserTableComponent({ children }: React.PropsWithChildren) {
+  return (
+    <div>
+      <table className="w-5/6">
+        <thead>
+          <tr className="text-white bg-green-600">
+            <th className="font-medium rounded-l-md p-1">Nama</th>
+            <th className="font-medium rounded-r-md p-1">Password</th>
+          </tr>
+        </thead>
+        <tbody>{children}</tbody>
+      </table>
+    </div>
+  )
+}
+
+function UserItemComponent({ name }: { name: string }) {
+  return (
+    <tr className='even:bg-gray-100'>
+      <td className='p-2'>{name}</td>
+      <td className='p-2'>******</td>
+    </tr>
+  )
+}
+
+// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const pharmacyDetailQueryOptions = (appID: string) =>
   queryOptions({
     queryKey: ['pharmacies', appID],
