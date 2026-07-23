@@ -24,7 +24,7 @@ export function NavBar({ profileName }: { profileName: string }) {
   return (
     <div
       className={cn(
-        'flex flex-row justify-between items-start w-full py-2.5 px-4 min-w-158 backdrop-blur-[20px] backdrop-saturate-70 bg-white/70 sticky top-0',
+        'flex flex-row justify-between items-start w-full py-2.5 px-4 min-w-158 backdrop-blur-[5px] backdrop-saturate-70 bg-white/70 sticky top-0',
         { 'border-b border-b-gray-100': isScrolled },
       )}
     >
@@ -103,7 +103,7 @@ function ProfileComponent({ name }: { name: string }) {
 
       routeContext.queryClient.invalidateQueries()
 
-      navigate({ to: '/login' })
+      navigate({ to: '/login', reloadDocument: true })
     } catch (error) {
       console.log(error)
     }

@@ -46,7 +46,7 @@ function FormComponent() {
       } else {
         context.queryClient.invalidateQueries()
         console.log('runs navigate')
-        navigate({ to: '/dashboard/pharmacies' })
+        navigate({ to: '/dashboard/pharmacies', reloadDocument: true })
       }
     } catch (error) {
       console.log(error)
