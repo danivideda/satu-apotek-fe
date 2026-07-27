@@ -1,14 +1,11 @@
 import ReactDOM from 'react-dom/client'
-import {
-  RouterProvider,
-  createRouter,
-  type AnyRouteMatch,
-} from '@tanstack/react-router'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
-import { QueryClient, type UseBaseQueryResult } from '@tanstack/react-query'
-import type { BreadCrumbValue } from './routes/_owner/dashboard/-components/BreadCrumbs'
+import { QueryClient } from '@tanstack/react-query'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 10_000 /* 5 seconds */ } },
+})
 
 const router = createRouter({
   routeTree,
@@ -25,10 +22,6 @@ const router = createRouter({
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
-  }
-
-  interface StaticDataRouteOption {
-    breadcrumb?: (match: AnyRouteMatch) => BreadCrumbValue | UseBaseQueryResult<any>
   }
 }
 

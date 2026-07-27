@@ -17,6 +17,7 @@ export const Route = createFileRoute('/_owner/dashboard/pharmacies/$appID')({
       }
     } catch (error) {
       console.log(error)
+      context.queryClient.removeQueries()
       throw redirect({ to: '/dashboard/pharmacies' })
     }
   },
@@ -128,7 +129,6 @@ const pharmacyDetailQueryOptions = (appID: string) =>
       const responseJSON = ResponseSchema.parse(await response.json())
       return responseJSON
     },
-    staleTime: 5000,
   })
 
 const ResponseSchema = z.object({

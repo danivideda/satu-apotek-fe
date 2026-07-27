@@ -5,11 +5,10 @@ export const authOwnerCheck = async (queryClient: QueryClient) => {
   const response = await queryClient.fetchQuery({
     queryKey: ['auth', 'owner', 'check'],
     queryFn: async () => {
-      console.log('query fn runs')
-      const response = fetchHelper('/auth/owners/check')
+      const response = await fetchHelper('/auth/owners/check')
+      console.log('check auth response.ok: ', response.ok)
       return response
     },
-    staleTime: 60_000, // 1 minute
   })
   return response
 }

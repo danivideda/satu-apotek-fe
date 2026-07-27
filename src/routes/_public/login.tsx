@@ -8,8 +8,8 @@ export const Route = createFileRoute('/_public/login')({
 })
 
 function FormComponent() {
-  const navigate = Route.useNavigate()
   const context = Route.useRouteContext()
+  const navigate = Route.useNavigate()
 
   const emailRef = useRef('')
   const passwordRef = useRef('')
@@ -44,8 +44,8 @@ function FormComponent() {
         const result = await response.json()
         console.log(result)
       } else {
-        context.queryClient.invalidateQueries()
-        console.log('runs navigate')
+        context.queryClient.removeQueries()
+        console.log('runs login navigate')
         navigate({ to: '/dashboard/pharmacies', reloadDocument: true })
       }
     } catch (error) {

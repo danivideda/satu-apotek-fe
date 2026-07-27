@@ -15,9 +15,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootComponent() {
   return (
     <>
-    <QueryClientProvider client={Route.useRouteContext().queryClient}>
-      <Outlet />
-    </QueryClientProvider>
+      <QueryClientProvider client={Route.useRouteContext().queryClient}>
+        <Outlet />
+      </QueryClientProvider>
       <TanStackDevtools
         config={{
           position: 'bottom-right',

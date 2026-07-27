@@ -5,17 +5,18 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { z } from 'zod'
 
 export const Route = createFileRoute('/_owner/dashboard/pharmacies/')({
-  loader: ({ context }) =>
-    // context.queryClient.ensureQueryData(pharmaciesQueryOptions),
-    context.queryClient.fetchQuery(pharmaciesQueryOptions),
+  loader: ({ context }) => {
+    console.log('loader from /pharmacies')
+    return context.queryClient.fetchQuery(pharmaciesQueryOptions)
+  },
   component: RouteComponent,
-  pendingComponent: () => <div>Loading pharmacies...</div>
+  pendingComponent: () => <div>Loading pharmacies...</div>,
 })
 
 function RouteComponent() {
-  const { data, status } = useQuery(pharmaciesQueryOptions)
-  if (status === 'error') return <div>Something went wrong...</div>
-  if (status === 'pending') return <div>Pending data...</div>
+  const { data, isSuccess, isFetching } = useQuery(pharmaciesQueryOptions)
+  if (!isSuccess) return <div>Something went wrong...</div>
+  if (isFetching) return <div>Refreshing pharmacies...</div>
 
   return (
     <>
@@ -78,10 +79,11 @@ const ResponseSchema = z.object({
   data: z.array(PharmacySchema),
 })
 
-// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const pharmaciesQueryOptions = queryOptions({
   queryKey: ['pharmacies'],
   queryFn: async () => {
+    await delay(500)
     console.log('query fn from /pharmacies loader')
     const response = await fetchHelper('/owner/pharmacies')
     if (!response.ok) {
@@ -90,5 +92,4 @@ const pharmaciesQueryOptions = queryOptions({
     const { data } = ResponseSchema.parse(await response.json())
     return data
   },
-  staleTime: 5000,
 })

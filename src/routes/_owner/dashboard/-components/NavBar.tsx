@@ -6,6 +6,7 @@ import {
   useRouteContext,
   type LinkComponent,
 } from '@tanstack/react-router'
+import { LogOutIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 export function NavBar({ profileName }: { profileName: string }) {
@@ -83,8 +84,7 @@ function BrandComponent() {
   return (
     <div className="flex flex-col flex-2 justify-center">
       <h1 className="text-2xl">Satu Apotek</h1>
-      <span className="text-sm text-gray-500">Owner dashboard</span>
-      <span className="text-sm text-gray-500">v0.1</span>
+      <span className="text-sm text-gray-500">Owner dashboard v0.1</span>
     </div>
   )
 }
@@ -101,7 +101,7 @@ function ProfileComponent({ name }: { name: string }) {
         throw new Error(`Error happened status: ${response.status}, ${message}`)
       }
 
-      routeContext.queryClient.invalidateQueries()
+      routeContext.queryClient.removeQueries()
 
       navigate({ to: '/login', reloadDocument: true })
     } catch (error) {
@@ -117,7 +117,7 @@ function ProfileComponent({ name }: { name: string }) {
           className="text-sm text-gray-500 hover:bg-gray-100 hover:text-black cursor-pointer"
           onClick={handleLogout}
         >
-          Logout -{`>`}
+          Logout <LogOutIcon className='inline' size={20} />
         </span>
       </div>
     </div>

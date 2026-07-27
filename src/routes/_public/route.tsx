@@ -12,7 +12,7 @@ export const Route = createFileRoute('/_public')({
     try {
       const response = await authOwnerCheck(context.queryClient)
       if (response.ok) {
-        throw redirect({ to: '/dashboard', replace: true })
+        throw redirect({ to: '/dashboard' })
       }
       return { response }
     } catch (error) {
