@@ -1,11 +1,12 @@
 import { fetchHelper } from '#/lib/fetch'
-import { queryOptions, useQuery } from '@tanstack/react-query'
+import { queryOptions, useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import z from 'zod'
 import { PharmacySchema } from '.'
 import { Edit2Icon } from 'lucide-react'
 import cn from '#/lib/cn'
 import Countdown from 'react-countdown'
+import { delay } from '#/lib/utils'
 
 export const Route = createFileRoute('/_owner/dashboard/pharmacies/$appID')({
   loader: async ({ context, params }) => {
@@ -131,11 +132,31 @@ function UserItemComponent({ name }: { name: string }) {
 }
 
 function KodeApotekComponent() {
-  const params = Route.useParams()
+  const { appID } = Route.useParams()
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await delay(200)
+      const response = await fetchHelper(
+        `/owner/pharmacies/${appID}/code/create`,
+        'POST',
+      )
+      if (!response.ok)
+        throw new Error(`Bad response, status: ${response.status}`)
 
-  const { status, data: response } = useQuery(
-    pharmacyCodeQueryOptions(params.appID),
-  )
+      const data = PharmacyCodeResponseSchema.parse(await response.json())
+      return data
+    },
+    onSuccess(data, _variables, _onMutateResult, context) {
+      context.client.setQueryData(pharmacyCodeQueryKey(appID), data)
+    },
+    onSettled(_data, _error, _variables, _onMutateResult, context) {
+      context.client.invalidateQueries({
+        queryKey: pharmacyCodeQueryKey(appID),
+      })
+    },
+  })
+
+  const { status, data: response } = useQuery(pharmacyCodeQueryOptions(appID))
 
   if (status === 'pending') {
     return <div>Loading status: pending...</div>
@@ -150,9 +171,19 @@ function KodeApotekComponent() {
       <div>untuk install aplikasi Satu Apotek</div>
       <button
         type="button"
-        className="p-2 bg-black text-white rounded-lg cursor-pointer"
+        className={cn('p-2 text-white rounded-lg h-10', {
+          'bg-green-600 cursor-pointer': !mutation.isPending,
+          'bg-green-200 cursor-progress': mutation.isPending,
+        })}
+        onClick={() => {
+          mutation.mutate()
+        }}
       >
-        Generate Code
+        {mutation.isPending ? (
+          <div className="h-full mx-auto aspect-square animate-spin rounded-full border-4 border-green-600 border-t-transparent" />
+        ) : (
+          'Get Code'
+        )}
       </button>
       {response.error && (
         <div className="p-4 text-center border-b border-dashed text-gray-300">
@@ -166,13 +197,15 @@ function KodeApotekComponent() {
           </div>
           <Countdown
             date={response.data?.expires_at}
-            renderer={({ formatted, completed }) => {
-              return completed ? (
-                <span>Code expired</span>
-              ) : (
-                <span>
-                  {formatted.hours}:{formatted.minutes}:{formatted.seconds}
-                </span>
+            renderer={({ formatted, completed, api }) => {
+              if (api.isStopped() && !completed) api.start()
+
+              return (
+                <div className="text-center text-gray-500">
+                  {completed
+                    ? `Kode expired`
+                    : `${formatted.hours}:${formatted.minutes}:${formatted.seconds}`}
+                </div>
               )
             }}
           />
@@ -182,9 +215,10 @@ function KodeApotekComponent() {
   )
 }
 
+const pharmacyCodeQueryKey = (appID: string) => ['kode_apotek', appID, 'get']
 const pharmacyCodeQueryOptions = (appID: string) =>
   queryOptions({
-    queryKey: ['kode_apotek', appID, 'get'],
+    queryKey: pharmacyCodeQueryKey(appID),
     queryFn: async () => {
       console.log('query fn from Get Kode Apotek')
       const response = await fetchHelper(
@@ -194,12 +228,12 @@ const pharmacyCodeQueryOptions = (appID: string) =>
       if (!response.ok && response.status !== 404) {
         throw new Error(`Bad response, status: ${response.status}`)
       }
-      const data = KodeApotekResponseSchema.parse(await response.json())
+      const data = PharmacyCodeResponseSchema.parse(await response.json())
       return data
     },
   })
 
-const KodeApotekResponseSchema = z.object({
+const PharmacyCodeResponseSchema = z.object({
   data: z.optional(
     z.object({
       code: z.string(),
@@ -209,7 +243,6 @@ const KodeApotekResponseSchema = z.object({
   error: z.optional(z.string()),
 })
 
-// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const pharmacyDetailQueryOptions = (appID: string) =>
   queryOptions({
     queryKey: ['pharmacies', appID],
