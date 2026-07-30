@@ -15,6 +15,7 @@ import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as OwnerDashboardRouteRouteImport } from './routes/_owner/dashboard/route'
 import { Route as PublicLoginRouteImport } from './routes/_public/login'
 import { Route as PublicRegisterRouteImport } from './routes/_public/register'
+import { Route as AppConnectRouteImport } from './routes/app.connect'
 import { Route as OwnerDashboardIndexRouteImport } from './routes/_owner/dashboard/index'
 import { Route as OwnerDashboardAccountRouteImport } from './routes/_owner/dashboard/account'
 import { Route as OwnerDashboardBillingRouteImport } from './routes/_owner/dashboard/billing'
@@ -49,6 +50,11 @@ const PublicRegisterRoute = PublicRegisterRouteImport.update({
   id: '/register',
   path: '/register',
   getParentRoute: () => PublicRouteRoute,
+} as any)
+const AppConnectRoute = AppConnectRouteImport.update({
+  id: '/app/connect',
+  path: '/app/connect',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const OwnerDashboardIndexRoute = OwnerDashboardIndexRouteImport.update({
   id: '/',
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof OwnerDashboardRouteRouteWithChildren
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
+  '/app/connect': typeof AppConnectRoute
   '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRouteRouteWithChildren
   '/dashboard/account': typeof OwnerDashboardAccountRoute
   '/dashboard/billing': typeof OwnerDashboardBillingRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
+  '/app/connect': typeof AppConnectRoute
   '/dashboard/account': typeof OwnerDashboardAccountRoute
   '/dashboard/billing': typeof OwnerDashboardBillingRoute
   '/dashboard': typeof OwnerDashboardIndexRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/_owner/dashboard': typeof OwnerDashboardRouteRouteWithChildren
   '/_public/login': typeof PublicLoginRoute
   '/_public/register': typeof PublicRegisterRoute
+  '/app/connect': typeof AppConnectRoute
   '/_owner/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRouteRouteWithChildren
   '/_owner/dashboard/account': typeof OwnerDashboardAccountRoute
   '/_owner/dashboard/billing': typeof OwnerDashboardBillingRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/register'
+    | '/app/connect'
     | '/dashboard/pharmacies'
     | '/dashboard/account'
     | '/dashboard/billing'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/app/connect'
     | '/dashboard/account'
     | '/dashboard/billing'
     | '/dashboard'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/_owner/dashboard'
     | '/_public/login'
     | '/_public/register'
+    | '/app/connect'
     | '/_owner/dashboard/pharmacies'
     | '/_owner/dashboard/account'
     | '/_owner/dashboard/billing'
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   OwnerRouteRoute: typeof OwnerRouteRouteWithChildren
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
+  AppConnectRoute: typeof AppConnectRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -209,6 +222,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/register'
       preLoaderRoute: typeof PublicRegisterRouteImport
       parentRoute: typeof PublicRouteRoute
+    }
+    '/app/connect': {
+      id: '/app/connect'
+      path: '/app/connect'
+      fullPath: '/app/connect'
+      preLoaderRoute: typeof AppConnectRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_owner/dashboard/': {
       id: '/_owner/dashboard/'
@@ -319,6 +339,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   OwnerRouteRoute: OwnerRouteRouteWithChildren,
   PublicRouteRoute: PublicRouteRouteWithChildren,
+  AppConnectRoute: AppConnectRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

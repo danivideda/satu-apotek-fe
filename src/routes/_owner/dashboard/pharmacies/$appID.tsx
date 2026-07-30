@@ -168,7 +168,12 @@ function KodeApotekComponent() {
   console.log('rendered success')
   return (
     <>
-      <div>untuk install aplikasi Satu Apotek</div>
+      <div className='mb-2'>
+        <div>Install aplikasi Satu Apotek dengan kode</div>
+        <div className="text-sm text-gray-400">
+          Kode hanya dapat digunakan sekali
+        </div>
+      </div>
       <button
         type="button"
         className={cn('p-2 text-white rounded-lg h-10', {
@@ -231,6 +236,7 @@ const pharmacyCodeQueryOptions = (appID: string) =>
       const data = PharmacyCodeResponseSchema.parse(await response.json())
       return data
     },
+    refetchOnWindowFocus: true,
   })
 
 const PharmacyCodeResponseSchema = z.object({

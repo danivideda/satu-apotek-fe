@@ -13,6 +13,9 @@ function Home() {
         <Link to="/register" className="block">
           register
         </Link>
+        <Link to="/app/connect" className="block">
+          Connect Apotek
+        </Link>
       </p>
     </div>
   )

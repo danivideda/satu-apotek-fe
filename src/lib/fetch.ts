@@ -18,7 +18,7 @@ export const fetchHelper = async (
   const response = await fetch(`${env.VITE_API_URL}${path}`, {
     method,
     headers,
-    body: payload,
+    body: JSON.stringify(payload),
     credentials: 'include',
   })
   return response
