@@ -9,10 +9,8 @@ export const Route = createFileRoute('/_owner/dashboard/pharmacies')({
 
 function RouteComponent() {
   return (
-    <div className="flex flex-col px-4">
-      <div className="mt-4">
-        <Outlet />
-      </div>
+    <div className="mt-4">
+      <Outlet />
     </div>
   )
 }

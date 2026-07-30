@@ -5,6 +5,7 @@ import z from 'zod'
 import { PharmacySchema } from '.'
 import { Edit2Icon } from 'lucide-react'
 import cn from '#/lib/cn'
+import Countdown from 'react-countdown'
 
 export const Route = createFileRoute('/_owner/dashboard/pharmacies/$appID')({
   loader: async ({ context, params }) => {
@@ -12,6 +13,11 @@ export const Route = createFileRoute('/_owner/dashboard/pharmacies/$appID')({
       const { data } = await context.queryClient.fetchQuery(
         pharmacyDetailQueryOptions(params.appID),
       )
+
+      await context.queryClient.prefetchQuery(
+        pharmacyCodeQueryOptions(params.appID),
+      )
+
       return {
         label: data.name,
       }
@@ -35,23 +41,30 @@ function RouteComponent() {
   const data = response.data
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <SectionComponent label="Deskripsi Apotek">
-        <DeskripsiItemComponent label="Nama" desc={data.name} />
-        <DeskripsiItemComponent label="Alamat" desc={data.address} />
-        <DeskripsiItemComponent
-          label="AppID"
-          desc={data.app_id}
-          editable={false}
-        />
-      </SectionComponent>
-      <SectionComponent label="Pengaturan User">
-        <UserTableComponent>
-          {data.users.map((item, index) => (
-            <UserItemComponent key={item.id + index} name={item.username} />
-          ))}
-        </UserTableComponent>
-      </SectionComponent>
+    <div className="flex flex-row gap-1.5 justify-center">
+      <div className="flex-1 flex flex-col gap-1.5">
+        <SectionComponent label="Deskripsi Apotek">
+          <DeskripsiItemComponent label="Nama" desc={data.name} />
+          <DeskripsiItemComponent label="Alamat" desc={data.address} />
+          <DeskripsiItemComponent
+            label="AppID"
+            desc={data.app_id}
+            editable={false}
+          />
+        </SectionComponent>
+        <SectionComponent label="Pengaturan User">
+          <UserTableComponent>
+            {data.users.map((item, index) => (
+              <UserItemComponent key={item.id + index} name={item.username} />
+            ))}
+          </UserTableComponent>
+        </SectionComponent>
+      </div>
+      <div className="flex-1 flex flex-col gap-1.5">
+        <SectionComponent label="Kode Apotek">
+          <KodeApotekComponent />
+        </SectionComponent>
+      </div>
     </div>
   )
 }
@@ -63,7 +76,7 @@ function SectionComponent({
   return (
     <div>
       <div>{label}</div>
-      <div className="flex flex-col justify-between container p-4">
+      <div className="flex flex-col justify-between gap-1.5 container p-4">
         {children}
       </div>
     </div>
@@ -91,13 +104,15 @@ function DeskripsiItemComponent({
 }
 
 function UserTableComponent({ children }: React.PropsWithChildren) {
+  const thCls = cn('font-medium text-green-600 rounded-l-md p-1')
+
   return (
     <div>
       <table className="w-5/6">
         <thead>
-          <tr className="text-white bg-green-600">
-            <th className="font-medium rounded-l-md p-1">Nama</th>
-            <th className="font-medium rounded-r-md p-1">Password</th>
+          <tr className="text-black bg-white border-b border-gray-200 text-left">
+            <th className={thCls}>Nama</th>
+            <th className={thCls}>Password</th>
           </tr>
         </thead>
         <tbody>{children}</tbody>
@@ -108,12 +123,91 @@ function UserTableComponent({ children }: React.PropsWithChildren) {
 
 function UserItemComponent({ name }: { name: string }) {
   return (
-    <tr className='even:bg-gray-100'>
-      <td className='p-2'>{name}</td>
-      <td className='p-2'>******</td>
+    <tr className="even:bg-gray-100">
+      <td className="p-2">{name}</td>
+      <td className="p-2">******</td>
     </tr>
   )
 }
+
+function KodeApotekComponent() {
+  const params = Route.useParams()
+
+  const { status, data: response } = useQuery(
+    pharmacyCodeQueryOptions(params.appID),
+  )
+
+  if (status === 'pending') {
+    return <div>Loading status: pending...</div>
+  }
+  if (status === 'error') {
+    return <div>Something went wrong...</div>
+  }
+
+  console.log('rendered success')
+  return (
+    <>
+      <div>untuk install aplikasi Satu Apotek</div>
+      <button
+        type="button"
+        className="p-2 bg-black text-white rounded-lg cursor-pointer"
+      >
+        Generate Code
+      </button>
+      {response.error && (
+        <div className="p-4 text-center border-b border-dashed text-gray-300">
+          kode apotek
+        </div>
+      )}
+      {response.data && (
+        <>
+          <div className="p-4 text-center border-b border-dashed text-black text-lg font-mono">
+            {response.data?.code}
+          </div>
+          <Countdown
+            date={response.data?.expires_at}
+            renderer={({ formatted, completed }) => {
+              return completed ? (
+                <span>Code expired</span>
+              ) : (
+                <span>
+                  {formatted.hours}:{formatted.minutes}:{formatted.seconds}
+                </span>
+              )
+            }}
+          />
+        </>
+      )}
+    </>
+  )
+}
+
+const pharmacyCodeQueryOptions = (appID: string) =>
+  queryOptions({
+    queryKey: ['kode_apotek', appID, 'get'],
+    queryFn: async () => {
+      console.log('query fn from Get Kode Apotek')
+      const response = await fetchHelper(
+        `/owner/pharmacies/${appID}/code`,
+        'GET',
+      )
+      if (!response.ok && response.status !== 404) {
+        throw new Error(`Bad response, status: ${response.status}`)
+      }
+      const data = KodeApotekResponseSchema.parse(await response.json())
+      return data
+    },
+  })
+
+const KodeApotekResponseSchema = z.object({
+  data: z.optional(
+    z.object({
+      code: z.string(),
+      expires_at: z.iso.datetime({ offset: true }),
+    }),
+  ),
+  error: z.optional(z.string()),
+})
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const pharmacyDetailQueryOptions = (appID: string) =>
@@ -126,12 +220,12 @@ const pharmacyDetailQueryOptions = (appID: string) =>
       if (!response.ok) {
         throw new Error(`Bad response, status: ${response.status}`)
       }
-      const responseJSON = ResponseSchema.parse(await response.json())
-      return responseJSON
+      const data = PharmacyDetailResponseSchema.parse(await response.json())
+      return data
     },
   })
 
-const ResponseSchema = z.object({
+const PharmacyDetailResponseSchema = z.object({
   data: PharmacySchema.extend({
     created_at: z.iso.datetime({ offset: true }),
     updated_at: z.iso.datetime({ offset: true }),
