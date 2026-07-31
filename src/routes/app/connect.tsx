@@ -8,21 +8,26 @@ export const Route = createFileRoute('/app/connect')({
 
 function RouteComponent() {
   const inputRef = useRef<HTMLInputElement>(null)
+  const navigate = Route.useNavigate()
+
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     const inputVal = inputRef.current?.value
-    console.log(inputVal)
     const response = await fetchHelper('/auth/pharmacies/connect', 'POST', {
-      "code": inputVal
+      code: inputVal,
     })
-    console.log(response.status)
+
+    if (!response.ok) {
+      console.log(`Bad request, status: ${response.status}`)
+    } else if (response.ok) {
+      navigate({ to: '/app/landing' })
+    }
   }
 
   return (
     <div className="container mx-auto">
       <div>Connect Apotek with code:</div>
       <form onSubmit={handleSubmit} className="flex flex-col gap-1.5">
-        <label htmlFor="code">Code</label>
         <div className="flex flex-row gap-1.5">
           <input
             ref={inputRef}
