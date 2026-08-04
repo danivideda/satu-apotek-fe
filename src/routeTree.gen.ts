@@ -15,11 +15,13 @@ import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as OwnerDashboardRouteRouteImport } from './routes/_owner/dashboard/route'
 import { Route as PublicLoginRouteImport } from './routes/_public/login'
 import { Route as PublicRegisterRouteImport } from './routes/_public/register'
-import { Route as AppConnectRouteImport } from './routes/app.connect'
+import { Route as AppConnectRouteImport } from './routes/app/connect'
+import { Route as AppLandingRouteImport } from './routes/app/landing'
 import { Route as OwnerDashboardIndexRouteImport } from './routes/_owner/dashboard/index'
 import { Route as OwnerDashboardAccountRouteImport } from './routes/_owner/dashboard/account'
 import { Route as OwnerDashboardBillingRouteImport } from './routes/_owner/dashboard/billing'
 import { Route as OwnerDashboardPharmaciesRouteRouteImport } from './routes/_owner/dashboard/pharmacies/route'
+import { Route as AppDashboardIndexRouteImport } from './routes/app/dashboard/index'
 import { Route as OwnerDashboardPharmaciesIndexRouteImport } from './routes/_owner/dashboard/pharmacies/index'
 import { Route as OwnerDashboardPharmaciesAppIDRouteImport } from './routes/_owner/dashboard/pharmacies/$appID'
 
@@ -56,6 +58,11 @@ const AppConnectRoute = AppConnectRouteImport.update({
   path: '/app/connect',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppLandingRoute = AppLandingRouteImport.update({
+  id: '/app/landing',
+  path: '/app/landing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OwnerDashboardIndexRoute = OwnerDashboardIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -77,6 +84,11 @@ const OwnerDashboardPharmaciesRouteRoute =
     path: '/pharmacies',
     getParentRoute: () => OwnerDashboardRouteRoute,
   } as any)
+const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
+  id: '/app/dashboard/',
+  path: '/app/dashboard/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OwnerDashboardPharmaciesIndexRoute =
   OwnerDashboardPharmaciesIndexRouteImport.update({
     id: '/',
@@ -96,10 +108,12 @@ export interface FileRoutesByFullPath {
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
   '/app/connect': typeof AppConnectRoute
+  '/app/landing': typeof AppLandingRoute
   '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRouteRouteWithChildren
   '/dashboard/account': typeof OwnerDashboardAccountRoute
   '/dashboard/billing': typeof OwnerDashboardBillingRoute
   '/dashboard/': typeof OwnerDashboardIndexRoute
+  '/app/dashboard/': typeof AppDashboardIndexRoute
   '/dashboard/pharmacies/$appID': typeof OwnerDashboardPharmaciesAppIDRoute
   '/dashboard/pharmacies/': typeof OwnerDashboardPharmaciesIndexRoute
 }
@@ -108,9 +122,11 @@ export interface FileRoutesByTo {
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
   '/app/connect': typeof AppConnectRoute
+  '/app/landing': typeof AppLandingRoute
   '/dashboard/account': typeof OwnerDashboardAccountRoute
   '/dashboard/billing': typeof OwnerDashboardBillingRoute
   '/dashboard': typeof OwnerDashboardIndexRoute
+  '/app/dashboard': typeof AppDashboardIndexRoute
   '/dashboard/pharmacies/$appID': typeof OwnerDashboardPharmaciesAppIDRoute
   '/dashboard/pharmacies': typeof OwnerDashboardPharmaciesIndexRoute
 }
@@ -123,10 +139,12 @@ export interface FileRoutesById {
   '/_public/login': typeof PublicLoginRoute
   '/_public/register': typeof PublicRegisterRoute
   '/app/connect': typeof AppConnectRoute
+  '/app/landing': typeof AppLandingRoute
   '/_owner/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRouteRouteWithChildren
   '/_owner/dashboard/account': typeof OwnerDashboardAccountRoute
   '/_owner/dashboard/billing': typeof OwnerDashboardBillingRoute
   '/_owner/dashboard/': typeof OwnerDashboardIndexRoute
+  '/app/dashboard/': typeof AppDashboardIndexRoute
   '/_owner/dashboard/pharmacies/$appID': typeof OwnerDashboardPharmaciesAppIDRoute
   '/_owner/dashboard/pharmacies/': typeof OwnerDashboardPharmaciesIndexRoute
 }
@@ -138,10 +156,12 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/app/connect'
+    | '/app/landing'
     | '/dashboard/pharmacies'
     | '/dashboard/account'
     | '/dashboard/billing'
     | '/dashboard/'
+    | '/app/dashboard/'
     | '/dashboard/pharmacies/$appID'
     | '/dashboard/pharmacies/'
   fileRoutesByTo: FileRoutesByTo
@@ -150,9 +170,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/app/connect'
+    | '/app/landing'
     | '/dashboard/account'
     | '/dashboard/billing'
     | '/dashboard'
+    | '/app/dashboard'
     | '/dashboard/pharmacies/$appID'
     | '/dashboard/pharmacies'
   id:
@@ -164,10 +186,12 @@ export interface FileRouteTypes {
     | '/_public/login'
     | '/_public/register'
     | '/app/connect'
+    | '/app/landing'
     | '/_owner/dashboard/pharmacies'
     | '/_owner/dashboard/account'
     | '/_owner/dashboard/billing'
     | '/_owner/dashboard/'
+    | '/app/dashboard/'
     | '/_owner/dashboard/pharmacies/$appID'
     | '/_owner/dashboard/pharmacies/'
   fileRoutesById: FileRoutesById
@@ -177,6 +201,8 @@ export interface RootRouteChildren {
   OwnerRouteRoute: typeof OwnerRouteRouteWithChildren
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
   AppConnectRoute: typeof AppConnectRoute
+  AppLandingRoute: typeof AppLandingRoute
+  AppDashboardIndexRoute: typeof AppDashboardIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -230,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppConnectRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/landing': {
+      id: '/app/landing'
+      path: '/app/landing'
+      fullPath: '/app/landing'
+      preLoaderRoute: typeof AppLandingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_owner/dashboard/': {
       id: '/_owner/dashboard/'
       path: '/'
@@ -257,6 +290,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/pharmacies'
       preLoaderRoute: typeof OwnerDashboardPharmaciesRouteRouteImport
       parentRoute: typeof OwnerDashboardRouteRoute
+    }
+    '/app/dashboard/': {
+      id: '/app/dashboard/'
+      path: '/app/dashboard'
+      fullPath: '/app/dashboard/'
+      preLoaderRoute: typeof AppDashboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_owner/dashboard/pharmacies/': {
       id: '/_owner/dashboard/pharmacies/'
@@ -340,6 +380,8 @@ const rootRouteChildren: RootRouteChildren = {
   OwnerRouteRoute: OwnerRouteRouteWithChildren,
   PublicRouteRoute: PublicRouteRouteWithChildren,
   AppConnectRoute: AppConnectRoute,
+  AppLandingRoute: AppLandingRoute,
+  AppDashboardIndexRoute: AppDashboardIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
