@@ -1,6 +1,7 @@
 import cn from '#/lib/cn'
 import { fetchHelper } from '#/lib/fetch'
-import { queryOptions, useQuery } from '@tanstack/react-query'
+import { delay } from '#/lib/utils'
+import { queryOptions } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { z } from 'zod'
 
@@ -14,9 +15,7 @@ export const Route = createFileRoute('/_owner/dashboard/pharmacies/')({
 })
 
 function RouteComponent() {
-  const { data, isSuccess, isFetching } = useQuery(pharmaciesQueryOptions)
-  if (!isSuccess) return <div>Something went wrong...</div>
-  if (isFetching) return <div>Refreshing pharmacies...</div>
+  const data = Route.useLoaderData()
 
   return (
     <>
@@ -79,12 +78,11 @@ const ResponseSchema = z.object({
   data: z.array(PharmacySchema),
 })
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const pharmaciesQueryOptions = queryOptions({
   queryKey: ['pharmacies'],
   queryFn: async () => {
-    await delay(500)
     console.log('query fn from /pharmacies loader')
+    await delay(500)
     const response = await fetchHelper('/owner/pharmacies')
     if (!response.ok) {
       throw new Error(`Bad response, status: ${response.status}`)

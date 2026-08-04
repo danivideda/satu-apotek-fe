@@ -103,7 +103,7 @@ function ProfileComponent({ name }: { name: string }) {
 
       routeContext.queryClient.removeQueries()
 
-      navigate({ to: '/login', reloadDocument: true })
+      navigate({ to: '/login', replace: true, reloadDocument: false })
     } catch (error) {
       console.log(error)
     }
@@ -117,7 +117,7 @@ function ProfileComponent({ name }: { name: string }) {
           className="text-sm text-gray-500 hover:bg-gray-100 hover:text-black cursor-pointer"
           onClick={handleLogout}
         >
-          Logout <LogOutIcon className='inline' size={20} />
+          Logout <LogOutIcon className="inline" size={20} />
         </span>
       </div>
     </div>

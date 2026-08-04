@@ -46,7 +46,7 @@ function FormComponent() {
       } else {
         context.queryClient.removeQueries()
         console.log('runs login navigate')
-        navigate({ to: '/dashboard/pharmacies', reloadDocument: true })
+        navigate({ to: '/dashboard/pharmacies', replace: true, reloadDocument: false })
       }
     } catch (error) {
       console.log(error)
@@ -94,8 +94,8 @@ function FormComponent() {
           'Login'
         )}
       </button>
-      <div className="text-red-400">
-        {isError && 'Something went wrong. Please check again.'}
+      <div className={cn('text-red-400', { invisible: !isError })}>
+        Something went wrong. Please check again.
       </div>
     </form>
   )
@@ -106,7 +106,7 @@ function RouteComponent() {
     <div className="bg-gray-50 h-screen">
       <div className="container mx-auto h-full">
         <div className="flex flex-col justify-center h-full w-full">
-          <div className="flex flex-col min-h-1/3 w-1/3 mx-auto border border-solid border-gray-300 bg-white rounded-md shadow-md p-4">
+          <div className="flex flex-col w-1/3 mx-auto border border-solid border-gray-300 bg-white rounded-md shadow-md p-4">
             <div className="text-2xl font-bold text-center">Login Owner</div>
             <FormComponent />
           </div>

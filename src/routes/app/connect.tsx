@@ -19,7 +19,7 @@ function RouteComponent() {
 
     if (!response.ok) {
       console.log(`Bad request, status: ${response.status}`)
-    } else if (response.ok) {
+    } else {
       navigate({ to: '/app/landing' })
     }
   }
