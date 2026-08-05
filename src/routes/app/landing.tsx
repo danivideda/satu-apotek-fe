@@ -3,15 +3,7 @@ import cn from '#/lib/cn'
 import { fetchHelper } from '#/lib/fetch'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { createFileRoute, isRedirect, redirect } from '@tanstack/react-router'
-import {
-  useEffect,
-  useRef,
-  useState,
-  type Dispatch,
-  type ReactHTMLElement,
-  type SetStateAction,
-} from 'react'
-import { Fragment } from 'react/jsx-runtime'
+import { useEffect, useState } from 'react'
 import z from 'zod'
 
 export const Route = createFileRoute('/app/landing')({
@@ -66,8 +58,8 @@ function RouteComponent() {
   const data = response.data
   return (
     <div className="flex flex-row h-lvh">
-      <div className='flex-1 bg-green-100 opacity-45 bg-[url("/endless-clouds.svg")]'></div>
-      <div className="flex-1 bg-white container mx-auto p-4">
+      <div className='flex-1 h-full bg-green-100 opacity-45 bg-[url("/endless-clouds.svg")]'></div>
+      <div className="flex-1 h-full bg-white container mx-auto p-4 overflow-auto">
         <div className="flex flex-col h-full justify-center">
           <div className="">
             <div className="text-lg">Selamat datang di</div>
@@ -111,15 +103,19 @@ function RouteComponent() {
               <div>
                 <div>Password:</div>
                 <input
+                  name="password"
                   type="password"
                   placeholder="type password"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value)
                   }}
+                  className="w-full p-2"
                 />
               </div>
-              <button className='p-2 border border-green-600 bg-green-100 cursor-pointer rounded-lg'>Login</button>
+              <button className="p-2 border border-green-600 bg-green-100 cursor-pointer rounded-lg">
+                Login
+              </button>
             </div>
           </div>
         </div>
