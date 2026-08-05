@@ -1,9 +1,11 @@
+import { API_URL } from '#/constants'
 import { authPharmacyCheck } from '#/lib/auth'
 import cn from '#/lib/cn'
 import { fetchHelper } from '#/lib/fetch'
+import { delay } from '#/lib/utils'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { createFileRoute, isRedirect, redirect } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import z from 'zod'
 
 export const Route = createFileRoute('/app/landing')({
@@ -41,19 +43,65 @@ export const Route = createFileRoute('/app/landing')({
 })
 
 function RouteComponent() {
+  const context = Route.useRouteContext()
+  const navigate = Route.useNavigate()
+
   const { data: response, status } = useQuery(pharmacyLandingQueryOptions)
   if (status === 'pending') return <div>Pending...</div>
   if (status === 'error') return <div>Something went wrong...</div>
 
   const [activeItemKey, setActiveItemKey] = useState('NoneSelected')
   const isNoneSelected = activeItemKey === 'NoneSelected'
+
+  const userIDRef = useRef<number | null>(null)
   const [password, setPassword] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    // reset password field when selecting different user
-    // runs when activeItemKey is changed AND an item is selected
-    if (!isNoneSelected) setPassword('')
+    const exec = async () => {
+      // reset password field when selecting different user
+      // runs when activeItemKey is changed
+      // delay: wait for password field transitions
+      await delay(500)
+      setPassword('')
+      // puts input field in focus
+      inputRef.current?.focus()
+    }
+
+    exec()
   }, [activeItemKey])
+
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setIsLoading(true)
+
+    try {
+      const response = await fetch(`${API_URL}/auth/users/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userIDRef.current,
+          password: password,
+        }),
+        credentials: 'include',
+      })
+      if (!response.ok) {
+        setIsLoading(false)
+        const result = await response.json()
+        console.log(result)
+      } else {
+        context.queryClient.removeQueries()
+        console.log('runs login navigate')
+        navigate({ to: '/app/dashboard', replace: true, reloadDocument: false })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const data = response.data
   return (
@@ -75,8 +123,10 @@ function RouteComponent() {
                   const onClickCallback = () =>
                     setActiveItemKey((prev) => {
                       if (itemKey === prev) {
+                        userIDRef.current = null
                         return 'NoneSelected'
                       }
+                      userIDRef.current = user.id
                       return itemKey
                     })
 
@@ -99,10 +149,14 @@ function RouteComponent() {
                   'invisible opacity-0': isNoneSelected,
                 },
               )}
+              // onTransitionEnd={(e) => {
+              //   inputRef.current?.focus()
+              // }}
             >
-              <div>
+              <form onSubmit={handleSubmit}>
                 <div>Password:</div>
                 <input
+                  ref={inputRef}
                   name="password"
                   type="password"
                   placeholder="type password"
@@ -112,9 +166,21 @@ function RouteComponent() {
                   }}
                   className="w-full p-2"
                 />
-              </div>
-              <button className="p-2 border border-green-600 bg-green-100 cursor-pointer rounded-lg">
-                Login
+              </form>
+              <button
+                type="submit"
+                className={cn(
+                  'p-2 w-full h-12 border border-green-600 bg-green-100 cursor-pointer rounded-lg',
+                  {
+                    'cursor-progress': isLoading,
+                  },
+                )}
+              >
+                {isLoading ? (
+                  <div className="h-full mx-auto aspect-square animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+                ) : (
+                  'Login'
+                )}
               </button>
             </div>
           </div>
