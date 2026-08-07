@@ -2,7 +2,7 @@ import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { NavBar } from './-components/NavBar'
 import { BreadCrumbs } from './-components/BreadCrumbs'
 
-export const Route = createFileRoute('/_owner/dashboard')({
+export const Route = createFileRoute('/owner/dashboard')({
   component: RouteComponent,
 })
 

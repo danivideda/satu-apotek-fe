@@ -46,7 +46,7 @@ function FormComponent() {
       } else {
         context.queryClient.removeQueries()
         console.log('runs login navigate')
-        navigate({ to: '/dashboard/pharmacies', replace: true, reloadDocument: false })
+        navigate({ to: '/owner/dashboard/pharmacies', replace: true, reloadDocument: false })
       }
     } catch (error) {
       console.log(error)

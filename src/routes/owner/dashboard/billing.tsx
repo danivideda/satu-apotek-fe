@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_owner/dashboard/billing')({
+export const Route = createFileRoute('/owner/dashboard/billing')({
   loader: () => ({
     label: 'Pengaturan Billing',
   }),

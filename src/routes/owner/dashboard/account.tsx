@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_owner/dashboard/account')({
+export const Route = createFileRoute('/owner/dashboard/account')({
   loader: () => ({
     label: 'Pengaturan Akun',
   }),
