@@ -6,7 +6,7 @@ import {
   redirect,
 } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_owner')({
+export const Route = createFileRoute('/owner')({
   beforeLoad: async ({ context }) => {
     console.log('From beforeLoad _owner')
     try {

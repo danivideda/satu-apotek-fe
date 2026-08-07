@@ -41,9 +41,9 @@ function NavMenuComponent() {
 
   return (
     <div className="flex flex-row justify-between w-75 p-3 bg-muted-primary border border-primary rounded-4xl h-fit">
-      <NavItemComponent to="/dashboard/pharmacies" label="Apotek" />
-      <NavItemComponent to="/dashboard/account" label="Account" />
-      <NavItemComponent to="/dashboard/billing" label="Billing" />
+      <NavItemComponent to="/owner/dashboard/pharmacies" label="Apotek" />
+      <NavItemComponent to="/owner/dashboard/account" label="Account" />
+      <NavItemComponent to="/owner/dashboard/billing" label="Billing" />
     </div>
   )
 }
@@ -90,8 +90,8 @@ function BrandComponent() {
 }
 
 function ProfileComponent({ name }: { name: string }) {
-  const routeContext = useRouteContext({ from: '/_owner/dashboard' })
-  const navigate = useNavigate()
+  const routeContext = useRouteContext({ from: '/owner/dashboard' })
+  const navigate = useNavigate({ from: '/owner/dashboard' })
 
   async function handleLogout() {
     try {

@@ -5,7 +5,7 @@ import { queryOptions } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { z } from 'zod'
 
-export const Route = createFileRoute('/_owner/dashboard/pharmacies/')({
+export const Route = createFileRoute('/owner/dashboard/pharmacies/')({
   loader: ({ context }) => {
     console.log('loader from /pharmacies')
     return context.queryClient.fetchQuery(pharmaciesQueryOptions)
@@ -31,7 +31,7 @@ function RouteComponent() {
             {data.map((pharmacy, index) => (
               <Link
                 key={pharmacy.app_id}
-                to="/dashboard/pharmacies/$appID"
+                to="/owner/dashboard/pharmacies/$appID"
                 params={{ appID: pharmacy.app_id }}
                 preload="intent"
               >

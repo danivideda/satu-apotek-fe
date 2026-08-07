@@ -8,7 +8,7 @@ import cn from '#/lib/cn'
 import Countdown from 'react-countdown'
 import { delay } from '#/lib/utils'
 
-export const Route = createFileRoute('/_owner/dashboard/pharmacies/$appID')({
+export const Route = createFileRoute('/owner/dashboard/pharmacies/$appID')({
   loader: async ({ context, params }) => {
     try {
       const { data } = await context.queryClient.fetchQuery(
@@ -25,7 +25,7 @@ export const Route = createFileRoute('/_owner/dashboard/pharmacies/$appID')({
     } catch (error) {
       console.log(error)
       context.queryClient.removeQueries()
-      throw redirect({ to: '/dashboard/pharmacies' })
+      throw redirect({ to: '/owner/dashboard/pharmacies' })
     }
   },
   component: RouteComponent,

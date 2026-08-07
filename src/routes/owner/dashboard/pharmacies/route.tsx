@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_owner/dashboard/pharmacies')({
+export const Route = createFileRoute('/owner/dashboard/pharmacies')({
   loader: () => ({
     label: 'Pengaturan Apotek',
   }),
