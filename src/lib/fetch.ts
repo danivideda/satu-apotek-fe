@@ -5,10 +5,12 @@ export const fetchHelper = async (
   path: string,
   method: 'GET' | 'POST' = 'GET',
   payload?: any,
+  csrf: 'owner' | 'user' = 'owner',
 ): Promise<Response> => {
   var csrfToken = ''
   if (method == 'POST') {
-    csrfToken = parseCookie(document.cookie)['owner_csrf'] ?? ''
+    const csrfName = csrf === 'owner' ? 'owner_csrf' : 'user_csrf'
+    csrfToken = parseCookie(document.cookie)[csrfName] ?? ''
   }
 
   const headers = {
@@ -23,3 +25,13 @@ export const fetchHelper = async (
   })
   return response
 }
+
+type fetchOpts = {
+  path: string
+  method?: 'GET' | 'POST'
+  payload?: any
+  csrf?: 'owner' | 'user'
+}
+
+export const fetchHelperOpts = (opts: fetchOpts) =>
+  fetchHelper(opts.path, opts.method, opts.payload, opts.csrf)

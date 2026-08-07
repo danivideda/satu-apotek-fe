@@ -1,8 +1,8 @@
 import { API_URL } from '#/constants'
-import { authPharmacyCheck } from '#/lib/auth'
+import { authPharmacyCheck, authUserCheck } from '#/lib/auth'
 import cn from '#/lib/cn'
 import { fetchHelper } from '#/lib/fetch'
-import { delay } from '#/lib/utils'
+import { runWithDelay } from '#/lib/utils'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { createFileRoute, isRedirect, redirect } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
@@ -10,7 +10,9 @@ import z from 'zod'
 
 export const Route = createFileRoute('/app/landing')({
   beforeLoad: async ({ context }) => {
-    console.log('From beforeLoad app/landing')
+    console.log(`From beforeLoad ${Route.fullPath}`)
+
+    // Check if Pharmacy is connected (Auth Pharmacy)
     try {
       const response = await authPharmacyCheck(context.queryClient)
       if (!response.ok) {
@@ -35,6 +37,22 @@ export const Route = createFileRoute('/app/landing')({
         throw redirect({ to: '/app/connect' })
       }
     }
+    // Check if User is already logged in or not
+    try {
+      const response = await authUserCheck(context.queryClient)
+      if (response.ok) {
+        throw redirect({ to: '/app/dashboard' })
+      }
+    } catch (error) {
+      if (isRedirect(error)) {
+        const _redirect = error
+        throw _redirect
+      } else {
+        context.queryClient.removeQueries()
+        console.log(error)
+        throw redirect({ to: '/app/landing' })
+      }
+    }
   },
   loader: async ({ context }) => {
     context.queryClient.fetchQuery(pharmacyLandingQueryOptions)
@@ -46,10 +64,6 @@ function RouteComponent() {
   const context = Route.useRouteContext()
   const navigate = Route.useNavigate()
 
-  const { data: response, status } = useQuery(pharmacyLandingQueryOptions)
-  if (status === 'pending') return <div>Pending...</div>
-  if (status === 'error') return <div>Something went wrong...</div>
-
   const [activeItemKey, setActiveItemKey] = useState('NoneSelected')
   const isNoneSelected = activeItemKey === 'NoneSelected'
 
@@ -60,18 +74,23 @@ function RouteComponent() {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    const exec = async () => {
+    const timerID = runWithDelay(() => {
       // reset password field when selecting different user
       // runs when activeItemKey is changed
       // delay: wait for password field transitions
-      await delay(500)
       setPassword('')
       // puts input field in focus
       inputRef.current?.focus()
-    }
+    }, 500)
 
-    exec()
+    return () => {
+      clearTimeout(timerID)
+    }
   }, [activeItemKey])
+
+  const { data: response, status } = useQuery(pharmacyLandingQueryOptions)
+  if (status === 'pending') return <div>Pending...</div>
+  if (status === 'error') return <div>Something went wrong...</div>
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -149,12 +168,8 @@ function RouteComponent() {
                   'invisible opacity-0': isNoneSelected,
                 },
               )}
-              // onTransitionEnd={(e) => {
-              //   inputRef.current?.focus()
-              // }}
             >
-              <form onSubmit={handleSubmit}>
-                <div>Password:</div>
+              <form className="flex flex-col gap-1.5" onSubmit={handleSubmit}>
                 <input
                   ref={inputRef}
                   name="password"
@@ -166,22 +181,22 @@ function RouteComponent() {
                   }}
                   className="w-full p-2"
                 />
+                <button
+                  type="submit"
+                  className={cn(
+                    'p-2 w-full h-12 border border-green-600 bg-green-100 cursor-pointer rounded-lg',
+                    {
+                      'cursor-progress': isLoading,
+                    },
+                  )}
+                >
+                  {isLoading ? (
+                    <div className="h-full mx-auto aspect-square animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+                  ) : (
+                    'Login'
+                  )}
+                </button>
               </form>
-              <button
-                type="submit"
-                className={cn(
-                  'p-2 w-full h-12 border border-green-600 bg-green-100 cursor-pointer rounded-lg',
-                  {
-                    'cursor-progress': isLoading,
-                  },
-                )}
-              >
-                {isLoading ? (
-                  <div className="h-full mx-auto aspect-square animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
-                ) : (
-                  'Login'
-                )}
-              </button>
             </div>
           </div>
         </div>
