@@ -1,8 +1,27 @@
+import { authPharmacyCheck } from '#/lib/auth'
 import { fetchHelper } from '#/lib/fetch'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, isRedirect, redirect } from '@tanstack/react-router'
 import { useRef } from 'react'
 
 export const Route = createFileRoute('/app/connect')({
+  beforeLoad: async ({ context }) => {
+    // Check if Pharmacy is already connected
+    try {
+      const response = await authPharmacyCheck(context.queryClient)
+      if (response.ok) {
+        throw redirect({ to: '/app/landing' })
+      }
+    } catch (error) {
+      if (isRedirect(error)) {
+        const _redirect = error
+        throw _redirect
+      } else {
+        context.queryClient.removeQueries()
+        console.log(error)
+        throw redirect({ to: '/app/connect' })
+      }
+    }
+  },
   component: RouteComponent,
 })
 

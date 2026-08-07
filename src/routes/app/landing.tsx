@@ -1,14 +1,18 @@
-import { authPharmacyCheck } from '#/lib/auth'
+import { API_URL } from '#/constants'
+import { authPharmacyCheck, authUserCheck } from '#/lib/auth'
 import cn from '#/lib/cn'
 import { fetchHelper } from '#/lib/fetch'
+import { runWithDelay } from '#/lib/utils'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { createFileRoute, isRedirect, redirect } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import z from 'zod'
 
 export const Route = createFileRoute('/app/landing')({
   beforeLoad: async ({ context }) => {
-    console.log('From beforeLoad app/landing')
+    console.log(`From beforeLoad ${Route.fullPath}`)
+
+    // Check if Pharmacy is connected (Auth Pharmacy)
     try {
       const response = await authPharmacyCheck(context.queryClient)
       if (!response.ok) {
@@ -33,6 +37,22 @@ export const Route = createFileRoute('/app/landing')({
         throw redirect({ to: '/app/connect' })
       }
     }
+    // Check if User is already logged in or not
+    try {
+      const response = await authUserCheck(context.queryClient)
+      if (response.ok) {
+        throw redirect({ to: '/app/dashboard' })
+      }
+    } catch (error) {
+      if (isRedirect(error)) {
+        const _redirect = error
+        throw _redirect
+      } else {
+        context.queryClient.removeQueries()
+        console.log(error)
+        throw redirect({ to: '/app/landing' })
+      }
+    }
   },
   loader: async ({ context }) => {
     context.queryClient.fetchQuery(pharmacyLandingQueryOptions)
@@ -41,19 +61,66 @@ export const Route = createFileRoute('/app/landing')({
 })
 
 function RouteComponent() {
+  const context = Route.useRouteContext()
+  const navigate = Route.useNavigate()
+
+  const [activeItemKey, setActiveItemKey] = useState('NoneSelected')
+  const isNoneSelected = activeItemKey === 'NoneSelected'
+
+  const userIDRef = useRef<number | null>(null)
+  const [password, setPassword] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    const timerID = runWithDelay(() => {
+      // reset password field when selecting different user
+      // runs when activeItemKey is changed
+      // delay: wait for password field transitions
+      setPassword('')
+      // puts input field in focus
+      inputRef.current?.focus()
+    }, 500)
+
+    return () => {
+      clearTimeout(timerID)
+    }
+  }, [activeItemKey])
+
   const { data: response, status } = useQuery(pharmacyLandingQueryOptions)
   if (status === 'pending') return <div>Pending...</div>
   if (status === 'error') return <div>Something went wrong...</div>
 
-  const [activeItemKey, setActiveItemKey] = useState('NoneSelected')
-  const isNoneSelected = activeItemKey === 'NoneSelected'
-  const [password, setPassword] = useState('')
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setIsLoading(true)
 
-  useEffect(() => {
-    // reset password field when selecting different user
-    // runs when activeItemKey is changed AND an item is selected
-    if (!isNoneSelected) setPassword('')
-  }, [activeItemKey])
+    try {
+      const response = await fetch(`${API_URL}/auth/users/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userIDRef.current,
+          password: password,
+        }),
+        credentials: 'include',
+      })
+      if (!response.ok) {
+        setIsLoading(false)
+        const result = await response.json()
+        console.log(result)
+      } else {
+        context.queryClient.removeQueries()
+        console.log('runs login navigate')
+        navigate({ to: '/app/dashboard', replace: true, reloadDocument: false })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const data = response.data
   return (
@@ -75,8 +142,10 @@ function RouteComponent() {
                   const onClickCallback = () =>
                     setActiveItemKey((prev) => {
                       if (itemKey === prev) {
+                        userIDRef.current = null
                         return 'NoneSelected'
                       }
+                      userIDRef.current = user.id
                       return itemKey
                     })
 
@@ -100,9 +169,9 @@ function RouteComponent() {
                 },
               )}
             >
-              <div>
-                <div>Password:</div>
+              <form className="flex flex-col gap-1.5" onSubmit={handleSubmit}>
                 <input
+                  ref={inputRef}
                   name="password"
                   type="password"
                   placeholder="type password"
@@ -112,10 +181,22 @@ function RouteComponent() {
                   }}
                   className="w-full p-2"
                 />
-              </div>
-              <button className="p-2 border border-green-600 bg-green-100 cursor-pointer rounded-lg">
-                Login
-              </button>
+                <button
+                  type="submit"
+                  className={cn(
+                    'p-2 w-full h-12 border border-green-600 bg-green-100 cursor-pointer rounded-lg',
+                    {
+                      'cursor-progress': isLoading,
+                    },
+                  )}
+                >
+                  {isLoading ? (
+                    <div className="h-full mx-auto aspect-square animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+                  ) : (
+                    'Login'
+                  )}
+                </button>
+              </form>
             </div>
           </div>
         </div>

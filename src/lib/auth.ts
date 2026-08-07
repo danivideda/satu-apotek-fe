@@ -24,3 +24,15 @@ export const authPharmacyCheck = async (queryClient: QueryClient) => {
   })
   return response
 }
+
+export const authUserCheck = async (queryClient: QueryClient) => {
+  const response = await queryClient.fetchQuery({
+    queryKey: ['auth', 'user', 'check'],
+    queryFn: async () => {
+      const response = await fetchHelper('/auth/users/check')
+      console.log('check auth response.ok: ', response.ok)
+      return response
+    },
+  })
+  return response
+}
