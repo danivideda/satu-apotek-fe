@@ -28,6 +28,7 @@ export const Route = createFileRoute('/app/connect')({
 function RouteComponent() {
   const inputRef = useRef<HTMLInputElement>(null)
   const navigate = Route.useNavigate()
+  const context = Route.useRouteContext()
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -39,6 +40,8 @@ function RouteComponent() {
     if (!response.ok) {
       console.log(`Bad request, status: ${response.status}`)
     } else {
+      context.queryClient.removeQueries()
+      console.log('runs login navigate')
       navigate({ to: '/app/landing' })
     }
   }
