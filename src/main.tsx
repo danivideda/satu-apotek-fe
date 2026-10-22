@@ -18,7 +18,7 @@ const router = createRouter({
   scrollRestoration: true,
   defaultStaleTime: 0,
   defaultPreloadStaleTime: 0,
-  defaultStaleReloadMode: 'background',
+  defaultStaleReloadMode: 'blocking',
   context: {
     queryClient: queryClient,
   },
