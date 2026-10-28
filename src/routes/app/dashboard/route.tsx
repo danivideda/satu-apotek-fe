@@ -1,10 +1,13 @@
 import { authUserCheck } from '#/lib/auth'
+import cn from '#/lib/cn'
+import { fetchHelperOpts } from '#/lib/fetch'
 import {
   createFileRoute,
   isRedirect,
   Outlet,
   redirect,
 } from '@tanstack/react-router'
+import type { PropsWithChildren } from 'react'
 
 export const Route = createFileRoute('/app/dashboard')({
   beforeLoad: async ({ context }) => {
@@ -38,27 +41,60 @@ export const Route = createFileRoute('/app/dashboard')({
 })
 
 function RouteComponent() {
+  const routeContext = Route.useRouteContext()
+  const navigate = Route.useNavigate()
+  async function handleLogout() {
+    try {
+      const response = await fetchHelperOpts({
+        path: '/auth/users/logout',
+        method: 'POST',
+        csrf: 'user',
+      })
+      if (!response.ok) {
+        const message = (await response.json()).error
+        throw new Error(`Error happened status: ${response.status}, ${message}`)
+      }
+
+      routeContext.queryClient.removeQueries()
+      navigate({ to: '/app/landing', replace: true, reloadDocument: false })
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <div className="flex h-dvh">
-      <div className="flex-2 min-w-30 max-w-46 flex border-r border-solid border-gray-200 bg-gray-100">
+      <div className="flex-2 min-w-30 max-w-46 flex border-r border-solid border-gray-200 bg-white">
         <div className="w-full flex flex-col justify-between">
-          <div className="shrink-0 h-20 border border-solid border-red-400">
-            top
+          <div className="h-20 shrink-0 p-2 border-b border-solid border-gray-200">
+            <span className="text-lg font-bold">Apotek 6 Sepuluh</span>
           </div>
-          <div className="flex-1 min-h-20 overflow-auto border border-solid border-yellow-400">
-            <div>Home</div>
-            <div>POS</div>
-            <div>Master Obat</div>
-            <div>Inventory</div>
+          <div className="flex-1 min-h-20 overflow-auto">
+            <NavItem label="Home" isActive={true} />
+            <NavItem label="Kasir" />
+            <NavItem label="Master Obat" />
           </div>
-          <div className="shrink-0 h-20 border border-solid border-blue-400">
-            bottom
+          <div className="h-20 shrink-0 p-2 border-t border-solid border-gray-200">
+            <div className="font-bold">daniihza</div>
+            <button className="cursor-pointer" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
         </div>
       </div>
       <div className="flex-9 p-3">
         <Outlet />
       </div>
+    </div>
+  )
+}
+
+function NavItem(
+  props: PropsWithChildren<{ label: string; isActive?: boolean }>,
+) {
+  const baseClass = cn('p-2 bg-white hover:bg-gray-100 cursor-pointer')
+  return (
+    <div className={cn(baseClass, { 'bg-green-100 text-green-600 font-medium': props.isActive })}>
+      {props.label}
     </div>
   )
 }
