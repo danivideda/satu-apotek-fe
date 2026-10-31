@@ -1,9 +1,11 @@
+import { BreadCrumbs } from '#/components/BreadCrumbs'
 import { authUserCheck } from '#/lib/auth'
 import cn from '#/lib/cn'
 import { fetchHelperOpts } from '#/lib/fetch'
 import {
   createFileRoute,
   isRedirect,
+  Link,
   Outlet,
   redirect,
 } from '@tanstack/react-router'
@@ -69,9 +71,19 @@ function RouteComponent() {
             <span className="text-lg font-bold">Apotek 6 Sepuluh</span>
           </div>
           <div className="flex-1 min-h-20 overflow-auto">
-            <NavItem label="Home" isActive={true} />
-            <NavItem label="Kasir" />
-            <NavItem label="Master Obat" />
+            <Link to="/app/dashboard/home">
+              {({ isActive }) => <NavItem label="Home" isActive={isActive} />}
+            </Link>
+            <Link to="/app/dashboard/master-produk">
+              {({ isActive }) => (
+                <NavItem label="Master Produk" isActive={isActive} />
+              )}
+            </Link>
+            <Link to="/app/dashboard/penjualan">
+              {({ isActive }) => (
+                <NavItem label="Penjualan" isActive={isActive} />
+              )}
+            </Link>
           </div>
           <div className="h-20 shrink-0 p-2 border-t border-solid border-gray-200">
             <div className="font-bold">daniihza</div>
@@ -82,6 +94,7 @@ function RouteComponent() {
         </div>
       </div>
       <div className="flex-9 p-3">
+        <BreadCrumbs />
         <Outlet />
       </div>
     </div>
@@ -93,7 +106,11 @@ function NavItem(
 ) {
   const baseClass = cn('p-2 bg-white hover:bg-gray-100 cursor-pointer')
   return (
-    <div className={cn(baseClass, { 'bg-green-100 text-green-600 font-medium': props.isActive })}>
+    <div
+      className={cn(baseClass, {
+        'bg-green-100 text-green-600 font-medium': props.isActive,
+      })}
+    >
       {props.label}
     </div>
   )

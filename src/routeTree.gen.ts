@@ -21,10 +21,16 @@ import { Route as AppLandingRouteImport } from './routes/app/landing'
 import { Route as OwnerIndexRouteImport } from './routes/owner/index'
 import { Route as OwnerDashboardRouteRouteImport } from './routes/owner/dashboard/route'
 import { Route as AppDashboardIndexRouteImport } from './routes/app/dashboard/index'
+import { Route as AppDashboardHomeRouteRouteImport } from './routes/app/dashboard/home/route'
+import { Route as AppDashboardMasterProdukRouteRouteImport } from './routes/app/dashboard/master-produk/route'
 import { Route as OwnerDashboardIndexRouteImport } from './routes/owner/dashboard/index'
 import { Route as OwnerDashboardAccountRouteImport } from './routes/owner/dashboard/account'
 import { Route as OwnerDashboardBillingRouteImport } from './routes/owner/dashboard/billing'
 import { Route as OwnerDashboardPharmaciesRouteRouteImport } from './routes/owner/dashboard/pharmacies/route'
+import { Route as AppDashboardHomeIndexRouteImport } from './routes/app/dashboard/home/index'
+import { Route as AppDashboardMasterProdukIndexRouteImport } from './routes/app/dashboard/master-produk/index'
+import { Route as AppDashboardMasterProdukAddRouteImport } from './routes/app/dashboard/master-produk/add'
+import { Route as AppDashboardPenjualanIndexRouteImport } from './routes/app/dashboard/penjualan/index'
 import { Route as OwnerDashboardPharmaciesIndexRouteImport } from './routes/owner/dashboard/pharmacies/index'
 import { Route as OwnerDashboardPharmaciesAppIDRouteImport } from './routes/owner/dashboard/pharmacies/$appID'
 
@@ -87,6 +93,17 @@ const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppDashboardRouteRoute,
 } as any)
+const AppDashboardHomeRouteRoute = AppDashboardHomeRouteRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AppDashboardRouteRoute,
+} as any)
+const AppDashboardMasterProdukRouteRoute =
+  AppDashboardMasterProdukRouteRouteImport.update({
+    id: '/master-produk',
+    path: '/master-produk',
+    getParentRoute: () => AppDashboardRouteRoute,
+  } as any)
 const OwnerDashboardIndexRoute = OwnerDashboardIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -107,6 +124,29 @@ const OwnerDashboardPharmaciesRouteRoute =
     id: '/pharmacies',
     path: '/pharmacies',
     getParentRoute: () => OwnerDashboardRouteRoute,
+  } as any)
+const AppDashboardHomeIndexRoute = AppDashboardHomeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppDashboardHomeRouteRoute,
+} as any)
+const AppDashboardMasterProdukIndexRoute =
+  AppDashboardMasterProdukIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppDashboardMasterProdukRouteRoute,
+  } as any)
+const AppDashboardMasterProdukAddRoute =
+  AppDashboardMasterProdukAddRouteImport.update({
+    id: '/add',
+    path: '/add',
+    getParentRoute: () => AppDashboardMasterProdukRouteRoute,
+  } as any)
+const AppDashboardPenjualanIndexRoute =
+  AppDashboardPenjualanIndexRouteImport.update({
+    id: '/penjualan/',
+    path: '/penjualan/',
+    getParentRoute: () => AppDashboardRouteRoute,
   } as any)
 const OwnerDashboardPharmaciesIndexRoute =
   OwnerDashboardPharmaciesIndexRouteImport.update({
@@ -132,12 +172,18 @@ export interface FileRoutesByFullPath {
   '/app/landing': typeof AppLandingRoute
   '/app/': typeof AppIndexRoute
   '/owner/': typeof OwnerIndexRoute
+  '/app/dashboard/home': typeof AppDashboardHomeRouteRouteWithChildren
+  '/app/dashboard/master-produk': typeof AppDashboardMasterProdukRouteRouteWithChildren
   '/owner/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRouteRouteWithChildren
   '/owner/dashboard/account': typeof OwnerDashboardAccountRoute
   '/owner/dashboard/billing': typeof OwnerDashboardBillingRoute
   '/app/dashboard/': typeof AppDashboardIndexRoute
   '/owner/dashboard/': typeof OwnerDashboardIndexRoute
+  '/app/dashboard/master-produk/add': typeof AppDashboardMasterProdukAddRoute
   '/owner/dashboard/pharmacies/$appID': typeof OwnerDashboardPharmaciesAppIDRoute
+  '/app/dashboard/home/': typeof AppDashboardHomeIndexRoute
+  '/app/dashboard/master-produk/': typeof AppDashboardMasterProdukIndexRoute
+  '/app/dashboard/penjualan/': typeof AppDashboardPenjualanIndexRoute
   '/owner/dashboard/pharmacies/': typeof OwnerDashboardPharmaciesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -152,7 +198,11 @@ export interface FileRoutesByTo {
   '/owner/dashboard/billing': typeof OwnerDashboardBillingRoute
   '/app/dashboard': typeof AppDashboardIndexRoute
   '/owner/dashboard': typeof OwnerDashboardIndexRoute
+  '/app/dashboard/master-produk/add': typeof AppDashboardMasterProdukAddRoute
   '/owner/dashboard/pharmacies/$appID': typeof OwnerDashboardPharmaciesAppIDRoute
+  '/app/dashboard/home': typeof AppDashboardHomeIndexRoute
+  '/app/dashboard/master-produk': typeof AppDashboardMasterProdukIndexRoute
+  '/app/dashboard/penjualan': typeof AppDashboardPenjualanIndexRoute
   '/owner/dashboard/pharmacies': typeof OwnerDashboardPharmaciesIndexRoute
 }
 export interface FileRoutesById {
@@ -168,12 +218,18 @@ export interface FileRoutesById {
   '/app/landing': typeof AppLandingRoute
   '/app/': typeof AppIndexRoute
   '/owner/': typeof OwnerIndexRoute
+  '/app/dashboard/home': typeof AppDashboardHomeRouteRouteWithChildren
+  '/app/dashboard/master-produk': typeof AppDashboardMasterProdukRouteRouteWithChildren
   '/owner/dashboard/pharmacies': typeof OwnerDashboardPharmaciesRouteRouteWithChildren
   '/owner/dashboard/account': typeof OwnerDashboardAccountRoute
   '/owner/dashboard/billing': typeof OwnerDashboardBillingRoute
   '/app/dashboard/': typeof AppDashboardIndexRoute
   '/owner/dashboard/': typeof OwnerDashboardIndexRoute
+  '/app/dashboard/master-produk/add': typeof AppDashboardMasterProdukAddRoute
   '/owner/dashboard/pharmacies/$appID': typeof OwnerDashboardPharmaciesAppIDRoute
+  '/app/dashboard/home/': typeof AppDashboardHomeIndexRoute
+  '/app/dashboard/master-produk/': typeof AppDashboardMasterProdukIndexRoute
+  '/app/dashboard/penjualan/': typeof AppDashboardPenjualanIndexRoute
   '/owner/dashboard/pharmacies/': typeof OwnerDashboardPharmaciesIndexRoute
 }
 export interface FileRouteTypes {
@@ -189,12 +245,18 @@ export interface FileRouteTypes {
     | '/app/landing'
     | '/app/'
     | '/owner/'
+    | '/app/dashboard/home'
+    | '/app/dashboard/master-produk'
     | '/owner/dashboard/pharmacies'
     | '/owner/dashboard/account'
     | '/owner/dashboard/billing'
     | '/app/dashboard/'
     | '/owner/dashboard/'
+    | '/app/dashboard/master-produk/add'
     | '/owner/dashboard/pharmacies/$appID'
+    | '/app/dashboard/home/'
+    | '/app/dashboard/master-produk/'
+    | '/app/dashboard/penjualan/'
     | '/owner/dashboard/pharmacies/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -209,7 +271,11 @@ export interface FileRouteTypes {
     | '/owner/dashboard/billing'
     | '/app/dashboard'
     | '/owner/dashboard'
+    | '/app/dashboard/master-produk/add'
     | '/owner/dashboard/pharmacies/$appID'
+    | '/app/dashboard/home'
+    | '/app/dashboard/master-produk'
+    | '/app/dashboard/penjualan'
     | '/owner/dashboard/pharmacies'
   id:
     | '__root__'
@@ -224,12 +290,18 @@ export interface FileRouteTypes {
     | '/app/landing'
     | '/app/'
     | '/owner/'
+    | '/app/dashboard/home'
+    | '/app/dashboard/master-produk'
     | '/owner/dashboard/pharmacies'
     | '/owner/dashboard/account'
     | '/owner/dashboard/billing'
     | '/app/dashboard/'
     | '/owner/dashboard/'
+    | '/app/dashboard/master-produk/add'
     | '/owner/dashboard/pharmacies/$appID'
+    | '/app/dashboard/home/'
+    | '/app/dashboard/master-produk/'
+    | '/app/dashboard/penjualan/'
     | '/owner/dashboard/pharmacies/'
   fileRoutesById: FileRoutesById
 }
@@ -329,6 +401,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardIndexRouteImport
       parentRoute: typeof AppDashboardRouteRoute
     }
+    '/app/dashboard/home': {
+      id: '/app/dashboard/home'
+      path: '/home'
+      fullPath: '/app/dashboard/home'
+      preLoaderRoute: typeof AppDashboardHomeRouteRouteImport
+      parentRoute: typeof AppDashboardRouteRoute
+    }
+    '/app/dashboard/master-produk': {
+      id: '/app/dashboard/master-produk'
+      path: '/master-produk'
+      fullPath: '/app/dashboard/master-produk'
+      preLoaderRoute: typeof AppDashboardMasterProdukRouteRouteImport
+      parentRoute: typeof AppDashboardRouteRoute
+    }
     '/owner/dashboard/': {
       id: '/owner/dashboard/'
       path: '/'
@@ -356,6 +442,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/owner/dashboard/pharmacies'
       preLoaderRoute: typeof OwnerDashboardPharmaciesRouteRouteImport
       parentRoute: typeof OwnerDashboardRouteRoute
+    }
+    '/app/dashboard/home/': {
+      id: '/app/dashboard/home/'
+      path: '/'
+      fullPath: '/app/dashboard/home/'
+      preLoaderRoute: typeof AppDashboardHomeIndexRouteImport
+      parentRoute: typeof AppDashboardHomeRouteRoute
+    }
+    '/app/dashboard/master-produk/': {
+      id: '/app/dashboard/master-produk/'
+      path: '/'
+      fullPath: '/app/dashboard/master-produk/'
+      preLoaderRoute: typeof AppDashboardMasterProdukIndexRouteImport
+      parentRoute: typeof AppDashboardMasterProdukRouteRoute
+    }
+    '/app/dashboard/master-produk/add': {
+      id: '/app/dashboard/master-produk/add'
+      path: '/add'
+      fullPath: '/app/dashboard/master-produk/add'
+      preLoaderRoute: typeof AppDashboardMasterProdukAddRouteImport
+      parentRoute: typeof AppDashboardMasterProdukRouteRoute
+    }
+    '/app/dashboard/penjualan/': {
+      id: '/app/dashboard/penjualan/'
+      path: '/penjualan'
+      fullPath: '/app/dashboard/penjualan/'
+      preLoaderRoute: typeof AppDashboardPenjualanIndexRouteImport
+      parentRoute: typeof AppDashboardRouteRoute
     }
     '/owner/dashboard/pharmacies/': {
       id: '/owner/dashboard/pharmacies/'
@@ -436,12 +550,48 @@ const OwnerRouteRouteWithChildren = OwnerRouteRoute._addFileChildren(
   OwnerRouteRouteChildren,
 )
 
+interface AppDashboardHomeRouteRouteChildren {
+  AppDashboardHomeIndexRoute: typeof AppDashboardHomeIndexRoute
+}
+
+const AppDashboardHomeRouteRouteChildren: AppDashboardHomeRouteRouteChildren = {
+  AppDashboardHomeIndexRoute: AppDashboardHomeIndexRoute,
+}
+
+const AppDashboardHomeRouteRouteWithChildren =
+  AppDashboardHomeRouteRoute._addFileChildren(
+    AppDashboardHomeRouteRouteChildren,
+  )
+
+interface AppDashboardMasterProdukRouteRouteChildren {
+  AppDashboardMasterProdukAddRoute: typeof AppDashboardMasterProdukAddRoute
+  AppDashboardMasterProdukIndexRoute: typeof AppDashboardMasterProdukIndexRoute
+}
+
+const AppDashboardMasterProdukRouteRouteChildren: AppDashboardMasterProdukRouteRouteChildren =
+  {
+    AppDashboardMasterProdukAddRoute: AppDashboardMasterProdukAddRoute,
+    AppDashboardMasterProdukIndexRoute: AppDashboardMasterProdukIndexRoute,
+  }
+
+const AppDashboardMasterProdukRouteRouteWithChildren =
+  AppDashboardMasterProdukRouteRoute._addFileChildren(
+    AppDashboardMasterProdukRouteRouteChildren,
+  )
+
 interface AppDashboardRouteRouteChildren {
+  AppDashboardHomeRouteRoute: typeof AppDashboardHomeRouteRouteWithChildren
+  AppDashboardMasterProdukRouteRoute: typeof AppDashboardMasterProdukRouteRouteWithChildren
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
+  AppDashboardPenjualanIndexRoute: typeof AppDashboardPenjualanIndexRoute
 }
 
 const AppDashboardRouteRouteChildren: AppDashboardRouteRouteChildren = {
+  AppDashboardHomeRouteRoute: AppDashboardHomeRouteRouteWithChildren,
+  AppDashboardMasterProdukRouteRoute:
+    AppDashboardMasterProdukRouteRouteWithChildren,
   AppDashboardIndexRoute: AppDashboardIndexRoute,
+  AppDashboardPenjualanIndexRoute: AppDashboardPenjualanIndexRoute,
 }
 
 const AppDashboardRouteRouteWithChildren =
