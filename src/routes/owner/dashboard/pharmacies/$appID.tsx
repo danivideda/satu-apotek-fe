@@ -168,7 +168,7 @@ function KodeApotekComponent() {
   console.log('rendered success')
   return (
     <>
-      <div className='mb-2'>
+      <div className="mb-2">
         <div>Install aplikasi Satu Apotek dengan kode</div>
         <div className="text-sm text-gray-400">
           Kode hanya dapat digunakan sekali
@@ -176,10 +176,14 @@ function KodeApotekComponent() {
       </div>
       <button
         type="button"
-        className={cn('p-2 text-white rounded-lg h-10', {
-          'bg-green-600 cursor-pointer': !mutation.isPending,
-          'bg-green-200 cursor-progress': mutation.isPending,
-        })}
+        className={cn(
+          'p-2 text-white rounded-lg h-10',
+          'active:scale-95 active:shadow-md transition-all ease-in-out',
+          {
+            'bg-green-600 cursor-pointer': !mutation.isPending,
+            'bg-green-200 cursor-progress': mutation.isPending,
+          },
+        )}
         onClick={() => {
           mutation.mutate()
         }}

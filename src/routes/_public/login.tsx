@@ -46,7 +46,11 @@ function FormComponent() {
       } else {
         context.queryClient.removeQueries()
         console.log('runs login navigate')
-        navigate({ to: '/owner/dashboard/pharmacies', replace: true, reloadDocument: false })
+        navigate({
+          to: '/owner/dashboard/pharmacies',
+          replace: true,
+          reloadDocument: false,
+        })
       }
     } catch (error) {
       console.log(error)
@@ -82,6 +86,7 @@ function FormComponent() {
         type="submit"
         className={cn(
           'w-full h-14 mt-4 text-white bg-primary p-4 rounded-sm transition-colors ease-in-out',
+          'active:scale-95 active:shadow-md transition-all ease-in-out',
           {
             'cursor-pointer hover:bg-green-400': !isLoading,
             'cursor-progress bg-secondary': isLoading,
