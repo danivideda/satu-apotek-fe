@@ -105,13 +105,13 @@ function DeskripsiItemComponent({
 }
 
 function UserTableComponent({ children }: React.PropsWithChildren) {
-  const thCls = cn('font-medium text-green-600 rounded-l-md p-1')
+  const thCls = cn('font-medium text-black rounded-l-md p-1')
 
   return (
     <div>
       <table className="w-5/6">
         <thead>
-          <tr className="text-black bg-white border-b border-gray-200 text-left">
+          <tr className="text-black bg-white border-b border-black text-left">
             <th className={thCls}>Nama</th>
             <th className={thCls}>Password</th>
           </tr>
@@ -124,7 +124,7 @@ function UserTableComponent({ children }: React.PropsWithChildren) {
 
 function UserItemComponent({ name }: { name: string }) {
   return (
-    <tr className="even:bg-gray-100">
+    <tr className="border-b border-gray-200 hover:bg-green-100/30">
       <td className="p-2">{name}</td>
       <td className="p-2">******</td>
     </tr>
